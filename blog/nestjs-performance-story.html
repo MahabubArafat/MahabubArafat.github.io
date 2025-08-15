@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.">
+    <meta name="keywords" content="NestJS, TypeScript, API performance, ShareTrip, booking system, legacy migration">
+    <meta name="author" content="Mahabub Alam Arafat">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="How I Cut API Response Time by 25% with NestJS">
+    <meta property="og:description" content="The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mahabubarafat.online/blog/nestjs-performance-story.html">
+    <meta property="og:site_name" content="Mahabub Alam Arafat - Portfolio">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How I Cut API Response Time by 25% with NestJS">
+    <meta name="twitter:description" content="The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "How I Cut API Response Time by 25% with NestJS",
+      "description": "The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.",
+      "author": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat"
+      },
+      "datePublished": "2025-01-15",
+      "dateModified": "2025-01-15",
+      "publisher": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://mahabubarafat.online/blog/nestjs-performance-story.html"
+      },
+      "keywords": ["NestJS", "TypeScript", "API performance", "ShareTrip", "booking system", "legacy migration"]
+    }
+    </script>
+    
+    <title>How I Cut API Response Time by 25% with NestJS | Mahabub Alam Arafat</title>
+    <link rel="canonical" href="https://mahabubarafat.online/blog/nestjs-performance-story.html">
+    <link rel="stylesheet" href="blog_styling.css">
+</head>
+<body>
+    <header>
+        <h1>Mahabub Alam Arafat</h1>
+        <p>Software Engineer - Blog</p>
+    </header>
+
+    <div class="container">
+        <a href="../index.html#blog" class="back-link">← Back to Portfolio</a>
+        
+        <article>
+            <header class="article-header">
+                <h1 class="article-title">How I Cut API Response Time by 25% with NestJS</h1>
+                <div class="article-meta">
+                    <div class="meta-item">
+                        <span>📅</span>
+                        <time datetime="2025-01-15">January 15, 2025</time>
+                    </div>
+                    <div class="meta-item">
+                        <span>⏱️</span>
+                        <span>8 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>🏷️</span>
+                        <span>Real Story</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content">
+                
+<h1>How I Cut API Response Time by 25% with NestJS</h1>
+
+<strong>TL;DR:</strong> I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 25% faster response times and way less headaches. Here's how I did it and what I learned.
+
+<h2>The Problem: Our API Was Slow (And Getting Slower)</h2>
+
+<p>Picture this: You're booking a flight, you hit "Search," and... you wait. And wait. Our legacy booking API was taking 2-3 seconds to respond on good days. During peak hours? Sometimes 5+ seconds.</p>
+
+<p>The old system was a mess of:</p>
+<ul>
+<li>JavaScript spaghetti code with no type safety</li>
+<li>Database queries that would make your DBA cry</li>
+<li>Zero caching (because "we'll add that later")</li>
+<li>Error handling that basically said "¯\_(ツ)_/¯"</li>
+</ul>
+
+<p>> <strong>The Wake-Up Call:</strong> During a flash sale, our API response times hit 8+ seconds. Users were abandoning bookings, and we were losing real money.</p>
+
+<h2>Why I Chose NestJS (Spoiler: It Wasn't Just Hype)</h2>
+
+<p>Everyone was talking about NestJS, but I needed more than hype. Here's what sold me:</p>
+
+<h3>TypeScript Out of the Box</h3>
+<p>No more <code>Cannot read property 'id' of undefined</code> at 2 AM. TypeScript caught so many bugs before they hit production that I actually started sleeping better.</p>
+
+<h3>Structure That Makes Sense</h3>
+<p>The old codebase? Finding anything took 20 minutes. NestJS forced us into a clean structure:</p>
+
+<pre><code>src/
+<p>├── booking/          # Everything booking-related</p>
+<p>│   ├── booking.controller.ts</p>
+<p>│   ├── booking.service.ts</p>
+<p>│   └── booking.module.ts</p>
+<p>├── payment/          # Payment stuff here</p>
+<p>└── shared/           # Common utilities</p>
+</code></pre>
+
+<h2>The Migration: What Actually Happened</h2>
+
+<h3>Week 1-2: Setting Up the Foundation</h3>
+<p>I started with the booking module. Basic CRUD operations, proper validation, and error handling that doesn't just throw generic 500 errors.</p>
+
+<pre><code>// Before: Pray this works
+<p>app.post('/booking', (req, res) => {</p>
+<p>// Hope req.body has what we need</p>
+<p>const booking = createBooking(req.body);</p>
+<p>res.json(booking);</p>
+<p>});</p>
+
+<p>// After: Know this works</p>
+<p>@Post()</p>
+<p>async createBooking(@Body() createBookingDto: CreateBookingDto) {</p>
+<p>return this.bookingService.create(createBookingDto);</p>
+<p>}</p>
+</code></pre>
+
+<h3>Week 3-4: The Database Nightmare</h3>
+<p>Our old queries were... creative. I found a query that was doing 12 separate database calls to get data that could be fetched in one.</p>
+
+<h3>Week 5-6: Adding the Magic (Caching)</h3>
+<p>This is where things got interesting. I added Redis caching for frequently accessed data:</p>
+
+<pre><code>async getPopularFlights() {
+<p>const cacheKey = 'popular-flights';</p>
+  
+<p>// Check cache first</p>
+<p>const cached = await this.redis.get(cacheKey);</p>
+<p>if (cached) return JSON.parse(cached);</p>
+  
+<p>// If not cached, fetch from DB</p>
+<p>const flights = await this.flightService.getPopular();</p>
+  
+<p>// Cache for 10 minutes</p>
+<p>await this.redis.setex(cacheKey, 600, JSON.stringify(flights));</p>
+  
+<p>return flights;</p>
+<p>}</p>
+</code></pre>
+
+<h2>The Results (The Good Stuff)</h2>
+
+<strong>🚀 Performance Improvements:</strong>
+<ul>
+<li>Average response time: 2.1s → 1.6s (25% improvement)</li>
+<li>Peak hour performance: 5.2s → 2.8s (46% improvement)</li>
+<li>Database queries reduced by 60%</li>
+<li>Zero downtime during migration</li>
+</ul>
+
+<h3>But Wait, There's More</h3>
+<ul>
+<li><strong>Bug reports dropped by 40%</strong> - TypeScript caught issues before users did</li>
+<li><strong>New feature development got 2x faster</strong> - Clean architecture pays off</li>
+<li><strong>Team happiness increased</strong> - No more debugging mysterious crashes at 3 AM</li>
+</ul>
+
+<h2>What I Wish I Knew Before Starting</h2>
+
+<h3>Start Small, Think Big</h3>
+<p>I wanted to rewrite everything at once. Bad idea. Start with one module, get it right, then expand. Your future self will thank you.</p>
+
+<h3>Caching Is Your Friend (But Don't Go Crazy)</h3>
+<p>Cache the right things. User sessions? Yes. The current time? Probably not. I learned this the hard way when our "current promotions" were showing last week's deals.</p>
+
+<h2>The Unexpected Bonus</h2>
+
+<p>The best part wasn't the performance improvement. It was coming to work and not being afraid of the codebase. When new requirements came in, instead of thinking "Oh no, how do I hack this in?" I thought "Cool, where does this fit in our architecture?"</p>
+
+<h2>Should You Do This Too?</h2>
+
+<p>If you're dealing with:</p>
+<ul>
+<li>Slow APIs that are getting slower</li>
+<li>Code that nobody wants to touch</li>
+<li>Bugs that keep coming back</li>
+<li>Database queries that make you question your life choices</li>
+</ul>
+
+<p>Then yes, consider NestJS. But remember:</p>
+<ul>
+<li>Start small and prove the concept</li>
+<li>Get your team on board (TypeScript has a learning curve)</li>
+<li>Plan for migration time - it's not a weekend project</li>
+<li>Measure everything so you can prove the improvements</li>
+</ul>
+
+<h2>What's Next?</h2>
+
+<p>Now that our booking API is solid, I'm working on the payment system. Same approach: NestJS, TypeScript, proper caching, and actual error handling. The goal? Cut payment processing time in half.</p>
+
+<p>I'll write about that journey too - including the mistakes I'm definitely going to make along the way.</p>
+
+<p>---</p>
+
+<em>Questions about this migration? Want to know more about specific parts? Hit me up on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - I love talking about this stuff.</em>
+
+            </div>
+
+            <div class="social-share">
+                <h3>Share this article</h3>
+                <div class="share-buttons">
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/nestjs-performance-story.html&title=How%20I%20Cut%20API%20Response%20Time%20by%2025%%20with%20NestJS" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/nestjs-performance-story.html&text=How%20I%20Cut%20API%20Response%20Time%20by%2025%%20with%20NestJS" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                </div>
+            </div>
+
+            <div class="author-bio">
+                <h3>About the Author</h3>
+                <p><strong>Mahabub Alam Arafat</strong> is a Software Engineer at ShareTrip with 2+ years of production experience. He specializes in backend development, API optimization, and turning legacy systems into modern, maintainable code.</p>
+                <p><a href="../index.html#contact">Get in touch</a> | <a href="https://linkedin.com/in/mahabubarafat" target="_blank">LinkedIn</a> | <a href="https://github.com/MahabubArafat" target="_blank">GitHub</a></p>
+            </div>
+        </article>
+    </div>
+
+    <footer>
+        <p>© 2025 Mahabub Alam Arafat. All rights reserved.</p>
+    </footer>
+</body>
+</html>

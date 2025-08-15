@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical blog by Mahabub Alam Arafat - Software Engineer. Deep dives into backend development, microservices, NestJS, Python, and modern web technologies.">
+    <meta name="keywords" content="Mahabub Arafat blog, software engineering blog, backend development, NestJS, TypeScript, microservices, Python, Node.js">
+    <meta name="author" content="Mahabub Alam Arafat">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Technical Blog | Mahabub Alam Arafat">
+    <meta property="og:description" content="Technical blog covering backend development, microservices, and modern web technologies by Software Engineer Mahabub Alam Arafat.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mahabubarafat.online/blog/">
+    <meta property="og:site_name" content="Mahabub Alam Arafat - Portfolio">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Technical Blog | Mahabub Alam Arafat">
+    <meta name="twitter:description" content="Technical blog covering backend development, microservices, and modern web technologies.">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Mahabub Alam Arafat's Technical Blog",
+      "description": "Technical blog covering backend development, microservices, and modern web technologies",
+      "url": "https://mahabubarafat.online/blog/",
+      "author": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat",
+        "url": "https://mahabubarafat.online",
+        "jobTitle": "Software Engineer",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "ShareTrip"
+        }
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat"
+      }
+    }
+    </script>
+    
+    <title>Technical Blog | Mahabub Alam Arafat - Software Engineer</title>
+    <link rel="canonical" href="https://mahabubarafat.online/blog/">
+    <link rel="stylesheet" href="blog_styling.css">
+    
+
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Technical Blog</h1>
+            <p>Insights from the world of software engineering</p>
+        </div>
+    </header>
+
+    <a href="../index.html#blog" class="back-link">← Back to Portfolio</a>
+
+    <div class="container">
+        <div class="section-title">
+            <h2>Latest Articles</h2>
+            <p>Deep dives into backend development, microservices, and modern web technologies</p>
+        </div>
+
+        <div class="blog-grid">
+            <!-- NestJS Performance Story -->
+            <article class="blog-card" onclick="location.href='nestjs-performance-story.html'">
+                <div class="blog-card-header">
+                    <div class="blog-category">Real Story</div>
+                    <h2>How I Cut API Response Time by 25% with NestJS</h2>
+                    <p class="blog-excerpt">The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results. No fluff, just honest insights from production.</p>
+                </div>
+                <div class="blog-card-body">
+                    <div class="blog-meta">
+                        <div class="blog-date">
+                            <span>📅</span>
+                            <time datetime="2025-01-15">Jan 15, 2025</time>
+                        </div>
+                        <div class="read-time">
+                            <span>⏱️</span>
+                            <span>8 min read</span>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-tags">
+                        <span class="tag">NestJS</span>
+                        <span class="tag">Performance</span>
+                        <span class="tag">Real Story</span>
+                        <span class="tag">API Optimization</span>
+                        <span class="tag">ShareTrip</span>
+                    </div>
+                    
+                    <div class="blog-stats">
+                        <span>🚀 Real production results and lessons learned</span>
+                        <a href="nestjs-performance-story.html" class="read-more-btn">Read More</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Placeholder for upcoming articles -->
+            <div class="coming-soon">
+                <h3>More Articles Coming Soon!</h3>
+                <p>I'm working on more in-depth technical articles covering memory optimization, AI automation, full-stack development, and DevOps practices.</p>
+            </div>
+        </div>
+
+        <div class="newsletter-signup">
+            <h3>Stay Updated</h3>
+            <p>Get notified when I publish new technical articles and insights</p>
+            <form class="newsletter-form" onsubmit="handleNewsletterSignup(event)">
+                <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                <button type="submit" class="newsletter-btn">Notify Me</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Mahabub Alam Arafat. All rights reserved.</p>
+        <p><a href="../index.html" style="color: #ccc;">Back to Portfolio</a></p>
+    </footer>
+
+    <script>
+        function handleNewsletterSignup(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            
+            // For now, just show an alert. In production, you'd integrate with a newsletter service
+            alert(`Thanks for your interest! I'll notify you at ${email} when new articles are published. For now, feel free to connect with me on LinkedIn or follow my GitHub for updates.`);
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        // Add some interactivity for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Add loading animation for blog cards
+            const blogCards = document.querySelectorAll('.blog-card');
+            blogCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

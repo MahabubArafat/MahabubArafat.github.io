@@ -1,0 +1,28 @@
+# robots.txt for https://mahabubarafat.online/
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://mahabubarafat.online/sitemap.xml
+
+# Optional: Crawl-delay (uncomment if needed)
+# Crawl-delay: 1
+
+# Block access to any potential sensitive directories (none currently)
+# Disallow: /private/
+# Disallow: /admin/
+
+# Allow all search engines to crawl the blog
+Allow: /blog/
+
+# Allow crawling of assets
+Allow: /assets/
+Allow: *.css
+Allow: *.js
+Allow: *.png
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.gif
+Allow: *.svg
+Allow: *.ico
