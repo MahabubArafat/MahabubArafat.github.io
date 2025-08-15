@@ -44,7 +44,7 @@ def parse_frontmatter(content):
         return {}, content
 
 def markdown_to_html(markdown_content):
-    """Convert markdown to HTML (basic implementation)"""
+    """Convert markdown to HTML with strategic ad placement"""
     html = markdown_content
     
     # Headers
@@ -89,7 +89,69 @@ def markdown_to_html(markdown_content):
     if in_list:
         result_lines.append('</ul>')
     
-    return '\n'.join(result_lines)
+    # Insert in-article ads at strategic positions
+    html_with_ads = insert_in_article_ads('\n'.join(result_lines))
+    
+    return html_with_ads
+
+def insert_in_article_ads(html_content):
+    """Insert Google AdSense in-article ads at strategic positions"""
+    
+    # In-article ad code
+    in_article_ad = '''
+<div class="ad-container" style="margin: 30px 0; text-align: center;">
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="ca-pub-6705222517983610"
+         data-ad-slot="1879717900"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({{}});
+    </script>
+</div>
+'''
+    
+    # Split content into sections based on h2 headers
+    sections = re.split(r'(<h2>.*?</h2>)', html_content)
+    
+    result = []
+    section_count = 0
+    
+    for i, section in enumerate(sections):
+        result.append(section)
+        
+        # If this is an h2 header, increment section count
+        if section.startswith('<h2>'):
+            section_count += 1
+            
+            # Insert ad after 2nd and 4th major sections
+            if section_count == 2 or section_count == 4:
+                result.append(in_article_ad)
+    
+    # If we have a long article but few h2s, insert ads based on content length
+    final_content = ''.join(result)
+    
+    # Count paragraphs to determine if we need more ads
+    paragraph_count = len(re.findall(r'<p>', final_content))
+    
+    # For articles with many paragraphs but few sections, add ads differently
+    if paragraph_count > 15 and section_count < 3:
+        # Split by paragraphs and insert ads every 8-10 paragraphs
+        paragraphs = re.split(r'(<p>.*?</p>)', final_content)
+        final_result = []
+        p_count = 0
+        
+        for part in paragraphs:
+            final_result.append(part)
+            if part.startswith('<p>'):
+                p_count += 1
+                if p_count % 8 == 0:  # Every 8th paragraph
+                    final_result.append(in_article_ad)
+        
+        return ''.join(final_result)
+    
+    return final_content
 
 def create_html_from_template(frontmatter, html_content):
     """Create full HTML page from template"""
@@ -187,8 +249,34 @@ def create_html_from_template(frontmatter, html_content):
                 </div>
             </header>
 
+            <!-- Display Ad - Top of Article -->
+            <div style="text-align: center; margin: 30px 0;">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-6705222517983610"
+                     data-ad-slot="3215730742"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({{}});
+                </script>
+            </div>
+
             <div class="content">
                 {html_content}
+            </div>
+
+            <!-- End of Article Ad -->
+            <div class="ad-container" style="margin: 40px 0; text-align: center;">
+                <ins class="adsbygoogle"
+                     style="display:block; text-align:center;"
+                     data-ad-layout="in-article"
+                     data-ad-format="fluid"
+                     data-ad-client="ca-pub-6705222517983610"
+                     data-ad-slot="1879717900"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({{}});
+                </script>
             </div>
 
             <div class="social-share">
