@@ -1,0 +1,14 @@
+# ads.txt file for mahabubarafat.online
+# This file will be updated with your actual Google AdSense publisher ID
+# Format: google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+
+# PLACEHOLDER - Replace with your actual AdSense publisher ID
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+
+# Instructions:
+# 1. Get your AdSense account approved
+# 2. Find your publisher ID in AdSense dashboard (Sites section)
+# 3. Replace the placeholder line above with your actual publisher ID
+# 4. Remove these comment lines
+
+# The f08c47fec0942fa0 is Google's certification authority identifier - keep this unchanged

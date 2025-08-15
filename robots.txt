@@ -3,8 +3,18 @@
 User-agent: *
 Allow: /
 
+# Explicitly allow Google's crawlers for AdSense
+User-agent: Googlebot
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
 # Sitemap location
 Sitemap: https://mahabubarafat.online/sitemap.xml
+
+# Allow ads.txt for AdSense verification
+Allow: /ads.txt
 
 # Optional: Crawl-delay (uncomment if needed)
 # Crawl-delay: 1
