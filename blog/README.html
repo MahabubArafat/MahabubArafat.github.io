@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A blog post by Mahabub Alam Arafat">
+    <meta name="keywords" content="">
+    <meta name="author" content="Mahabub Alam Arafat">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Blog Post">
+    <meta property="og:description" content="A blog post by Mahabub Alam Arafat">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mahabubarafat.online/blog/blog-post.html">
+    <meta property="og:site_name" content="Mahabub Alam Arafat - Portfolio">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog Post">
+    <meta name="twitter:description" content="A blog post by Mahabub Alam Arafat">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Blog Post",
+      "description": "A blog post by Mahabub Alam Arafat",
+      "author": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat"
+      },
+      "datePublished": "2025-08-15",
+      "dateModified": "2025-08-15",
+      "publisher": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://mahabubarafat.online/blog/blog-post.html"
+      },
+      "keywords": []
+    }
+    </script>
+    
+    <title>Blog Post | Mahabub Alam Arafat</title>
+    <link rel="canonical" href="https://mahabubarafat.online/blog/blog-post.html">
+    <link rel="stylesheet" href="blog_styling.css">
+</head>
+<body>
+    <header>
+        <h1>Mahabub Alam Arafat</h1>
+        <p>Software Engineer - Blog</p>
+    </header>
+
+    <div class="container">
+        <a href="../index.html#blog" class="back-link">← Back to Portfolio</a>
+        
+        <article>
+            <header class="article-header">
+                <h1 class="article-title">Blog Post</h1>
+                <div class="article-meta">
+                    <div class="meta-item">
+                        <span>📅</span>
+                        <time datetime="2025-08-15">August 15, 2025</time>
+                    </div>
+                    <div class="meta-item">
+                        <span>⏱️</span>
+                        <span>5 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>🏷️</span>
+                        <span>Technology</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content">
+                <h1>Markdown Blog System</h1>
+
+<p>This folder contains markdown files that get converted to HTML blog posts.</p>
+
+<h2>How to Write a New Blog Post</h2>
+
+<p>1. <strong>Create a new <code>.md</code> file</strong> in this folder (e.g., <code>my-new-post.md</code>)</p>
+
+<p>2. <strong>Start with frontmatter</strong> (the metadata at the top):</p>
+<pre><code>---
+<p>title: "Your Awesome Blog Title"</p>
+<p>description: "SEO description (150-160 characters max)"</p>
+<p>keywords: ["keyword1", "keyword2", "keyword3"]</p>
+<p>date: "2025-01-15"</p>
+<p>readTime: "5 min read"</p>
+<p>category: "Technology"</p>
+<p>slug: "your-blog-slug"</p>
+<p>---</p>
+</code></pre>
+
+<p>3. <strong>Write your content in markdown</strong> below the frontmatter</p>
+
+<p>4. <strong>Build the HTML</strong> by running:</p>
+<ul>
+<li>Windows: Double-click <code>build-blog.bat</code></li>
+<li>Command line: <code>python build_blog.py</code></li>
+</ul>
+
+<p>5. <strong>Update your portfolio</strong> - The script will tell you to update the blog index and showcase</p>
+
+<h2>Markdown Tips</h2>
+
+<ul>
+<li>Use <code># Title</code> for main headings</li>
+<li>Use <code>## Section</code> for sections</li>
+<li>Use <code><strong>bold</strong></code> and <code><em>italic</em></code> for emphasis</li>
+<li>Use \<code>code\</code> for inline code</li>
+<li>Use triple backticks for code blocks:</li>
+</ul>
+  <pre><code>  const example = "code block";
+  </code></pre>
+<ul>
+<li>Use <code>- item</code> for bullet lists</li>
+<li>Use <code>> Quote</code> for blockquotes</li>
+</ul>
+
+<h2>File Structure</h2>
+
+<pre><code>blog/
+<p>├── markdown/           # Your markdown files go here</p>
+<p>│   ├── template.md     # Template to copy from</p>
+<p>│   └── your-post.md    # Your actual posts</p>
+<p>├── your-post.html      # Generated HTML (don't edit)</p>
+<p>└── blog_styling.css    # Styles for all blogs</p>
+</code></pre>
+
+<h2>Example Post Structure</h2>
+
+<pre><code>---
+<p>title: "How I Fixed That Bug"</p>
+<p>description: "The story of debugging a mysterious issue in production"</p>
+<p>keywords: ["debugging", "production", "bug fix"]</p>
+<p>date: "2025-01-15"</p>
+<p>readTime: "5 min read"</p>
+<p>category: "Debugging"</p>
+<p>slug: "how-i-fixed-that-bug"</p>
+<p>---</p>
+
+<h1>How I Fixed That Bug</h1>
+
+<strong>TL;DR:</strong> It was a missing semicolon. Always is.
+
+<h2>The Problem</h2>
+
+<p>Everything was broken and I didn't know why...</p>
+
+<h2>The Solution</h2>
+
+<p>After 3 cups of coffee and questioning my life choices...</p>
+
+<h2>The Lesson</h2>
+
+<p>Always check the basics first.</p>
+</code></pre>
+
+<p>That's it! Much easier than writing HTML by hand.</p>
+
+            </div>
+
+            <div class="social-share">
+                <h3>Share this article</h3>
+                <div class="share-buttons">
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/blog-post.html&title=Blog%20Post" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/blog-post.html&text=Blog%20Post" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                </div>
+            </div>
+
+            <div class="author-bio">
+                <h3>About the Author</h3>
+                <p><strong>Mahabub Alam Arafat</strong> is a Software Engineer at ShareTrip with 2+ years of production experience. He specializes in backend development, API optimization, and turning legacy systems into modern, maintainable code.</p>
+                <p><a href="../index.html#contact">Get in touch</a> | <a href="https://linkedin.com/in/mahabubarafat" target="_blank">LinkedIn</a> | <a href="https://github.com/MahabubArafat" target="_blank">GitHub</a></p>
+            </div>
+        </article>
+    </div>
+
+    <footer>
+        <p>© 2025 Mahabub Alam Arafat. All rights reserved.</p>
+    </footer>
+</body>
+</html>

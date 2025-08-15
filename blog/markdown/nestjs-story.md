@@ -1,5 +1,5 @@
 ---
-title: "How I Cut API Response Time by 25% with NestJS"
+title: "How I Made Our API 3-4x Faster with NestJS"
 description: "The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results."
 keywords: ["NestJS", "TypeScript", "API performance", "ShareTrip", "booking system", "legacy migration"]
 date: "2025-01-15"
@@ -8,13 +8,13 @@ category: "Real Story"
 slug: "nestjs-performance-story"
 ---
 
-# How I Cut API Response Time by 25% with NestJS
+# How I Made Our API 3-4x Faster with NestJS
 
-**TL;DR:** I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 25% faster response times and way less headaches. Here's how I did it and what I learned.
+**TL;DR:** I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 3-4x faster response times (from 20-30 seconds down to 8-9 seconds) and way less headaches. Here's how I did it and what I learned.
 
 ## The Problem: Our API Was Slow (And Getting Slower)
 
-Picture this: You're booking a flight, you hit "Search," and... you wait. And wait. Our legacy booking API was taking 2-3 seconds to respond on good days. During peak hours? Sometimes 5+ seconds.
+Picture this: You're booking a flight, you hit "Search," and... you wait. And wait. Our legacy booking API was taking 20-30 seconds to respond on average. We were generating so many flight data options that the older API simply couldn't handle the search load efficiently.
 
 The old system was a mess of:
 - JavaScript spaghetti code with no type safety
@@ -22,7 +22,7 @@ The old system was a mess of:
 - Zero caching (because "we'll add that later")
 - Error handling that basically said "¯\_(ツ)_/¯"
 
-> **The Wake-Up Call:** During a flash sale, our API response times hit 8+ seconds. Users were abandoning bookings, and we were losing real money.
+> **The Wake-Up Call:** With response times averaging 20-30 seconds, users were abandoning bookings left and right. We were losing real money because people couldn't wait that long to see flight options.
 
 ## Why I Chose NestJS (Spoiler: It Wasn't Just Hype)
 
@@ -68,22 +68,28 @@ async createBooking(@Body() createBookingDto: CreateBookingDto) {
 Our old queries were... creative. I found a query that was doing 12 separate database calls to get data that could be fetched in one.
 
 ### Week 5-6: Adding the Magic (Caching)
-This is where things got interesting. I added Redis caching for frequently accessed data:
+This is where things got interesting. I added Redis caching for frequently accessed data like airports, routes, cities, and discounts:
 
 ```javascript
-async getPopularFlights() {
-  const cacheKey = 'popular-flights';
-  
-  // Check cache first
+// Cache frequently accessed reference data
+async getAirports() {
+  const cacheKey = 'airports-list';
   const cached = await this.redis.get(cacheKey);
   if (cached) return JSON.parse(cached);
   
-  // If not cached, fetch from DB
+  const airports = await this.airportService.getAll();
+  await this.redis.setex(cacheKey, 3600, JSON.stringify(airports)); // 1 hour cache
+  return airports;
+}
+
+// Cache routes, cities, discounts similarly
+async getPopularFlights() {
+  const cacheKey = 'popular-flights';
+  const cached = await this.redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
+  
   const flights = await this.flightService.getPopular();
-  
-  // Cache for 10 minutes
-  await this.redis.setex(cacheKey, 600, JSON.stringify(flights));
-  
+  await this.redis.setex(cacheKey, 600, JSON.stringify(flights)); // 10 minutes
   return flights;
 }
 ```
@@ -91,9 +97,10 @@ async getPopularFlights() {
 ## The Results (The Good Stuff)
 
 **🚀 Performance Improvements:**
-- Average response time: 2.1s → 1.6s (25% improvement)
-- Peak hour performance: 5.2s → 2.8s (46% improvement)
-- Database queries reduced by 60%
+- Average response time: 20-30s → 8-9s (3-4x faster!)
+- Handled massive flight data generation that broke the old API
+- Database queries reduced by 60% through smart caching
+- Cached frequent queries (airports, routes, cities, discounts) for instant access
 - Zero downtime during migration
 
 ### But Wait, There's More
