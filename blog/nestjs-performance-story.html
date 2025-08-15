@@ -9,7 +9,7 @@
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="How I Cut API Response Time by 25% with NestJS">
+    <meta property="og:title" content="How I Made Our API 3-4x Faster with NestJS">
     <meta property="og:description" content="The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://mahabubarafat.online/blog/nestjs-performance-story.html">
@@ -17,7 +17,7 @@
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="How I Cut API Response Time by 25% with NestJS">
+    <meta name="twitter:title" content="How I Made Our API 3-4x Faster with NestJS">
     <meta name="twitter:description" content="The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.">
     
     <!-- Structured Data -->
@@ -25,7 +25,7 @@
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "headline": "How I Cut API Response Time by 25% with NestJS",
+      "headline": "How I Made Our API 3-4x Faster with NestJS",
       "description": "The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.",
       "author": {
         "@type": "Person",
@@ -45,7 +45,7 @@
     }
     </script>
     
-    <title>How I Cut API Response Time by 25% with NestJS | Mahabub Alam Arafat</title>
+    <title>How I Made Our API 3-4x Faster with NestJS | Mahabub Alam Arafat</title>
     <link rel="canonical" href="https://mahabubarafat.online/blog/nestjs-performance-story.html">
     <link rel="stylesheet" href="blog_styling.css">
 </head>
@@ -60,7 +60,7 @@
         
         <article>
             <header class="article-header">
-                <h1 class="article-title">How I Cut API Response Time by 25% with NestJS</h1>
+                <h1 class="article-title">How I Made Our API 3-4x Faster with NestJS</h1>
                 <div class="article-meta">
                     <div class="meta-item">
                         <span>📅</span>
@@ -79,13 +79,13 @@
 
             <div class="content">
                 
-<h1>How I Cut API Response Time by 25% with NestJS</h1>
+<h1>How I Made Our API 3-4x Faster with NestJS</h1>
 
-<strong>TL;DR:</strong> I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 25% faster response times and way less headaches. Here's how I did it and what I learned.
+<strong>TL;DR:</strong> I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 3-4x faster response times (from 20-30 seconds down to 8-9 seconds) and way less headaches. Here's how I did it and what I learned.
 
 <h2>The Problem: Our API Was Slow (And Getting Slower)</h2>
 
-<p>Picture this: You're booking a flight, you hit "Search," and... you wait. And wait. Our legacy booking API was taking 2-3 seconds to respond on good days. During peak hours? Sometimes 5+ seconds.</p>
+<p>Picture this: You're booking a flight, you hit "Search," and... you wait. And wait. Our legacy booking API was taking 20-30 seconds to respond on average. We were generating so many flight data options that the older API simply couldn't handle the search load efficiently.</p>
 
 <p>The old system was a mess of:</p>
 <ul>
@@ -95,7 +95,7 @@
 <li>Error handling that basically said "¯\_(ツ)_/¯"</li>
 </ul>
 
-<p>> <strong>The Wake-Up Call:</strong> During a flash sale, our API response times hit 8+ seconds. Users were abandoning bookings, and we were losing real money.</p>
+<p>> <strong>The Wake-Up Call:</strong> With response times averaging 20-30 seconds, users were abandoning bookings left and right. We were losing real money because people couldn't wait that long to see flight options.</p>
 
 <h2>Why I Chose NestJS (Spoiler: It Wasn't Just Hype)</h2>
 
@@ -139,21 +139,27 @@
 <p>Our old queries were... creative. I found a query that was doing 12 separate database calls to get data that could be fetched in one.</p>
 
 <h3>Week 5-6: Adding the Magic (Caching)</h3>
-<p>This is where things got interesting. I added Redis caching for frequently accessed data:</p>
+<p>This is where things got interesting. I added Redis caching for frequently accessed data like airports, routes, cities, and discounts:</p>
 
-<pre><code>async getPopularFlights() {
-<p>const cacheKey = 'popular-flights';</p>
-  
-<p>// Check cache first</p>
+<pre><code>// Cache frequently accessed reference data
+<p>async getAirports() {</p>
+<p>const cacheKey = 'airports-list';</p>
 <p>const cached = await this.redis.get(cacheKey);</p>
 <p>if (cached) return JSON.parse(cached);</p>
   
-<p>// If not cached, fetch from DB</p>
+<p>const airports = await this.airportService.getAll();</p>
+<p>await this.redis.setex(cacheKey, 3600, JSON.stringify(airports)); // 1 hour cache</p>
+<p>return airports;</p>
+<p>}</p>
+
+<p>// Cache routes, cities, discounts similarly</p>
+<p>async getPopularFlights() {</p>
+<p>const cacheKey = 'popular-flights';</p>
+<p>const cached = await this.redis.get(cacheKey);</p>
+<p>if (cached) return JSON.parse(cached);</p>
+  
 <p>const flights = await this.flightService.getPopular();</p>
-  
-<p>// Cache for 10 minutes</p>
-<p>await this.redis.setex(cacheKey, 600, JSON.stringify(flights));</p>
-  
+<p>await this.redis.setex(cacheKey, 600, JSON.stringify(flights)); // 10 minutes</p>
 <p>return flights;</p>
 <p>}</p>
 </code></pre>
@@ -162,9 +168,10 @@
 
 <strong>🚀 Performance Improvements:</strong>
 <ul>
-<li>Average response time: 2.1s → 1.6s (25% improvement)</li>
-<li>Peak hour performance: 5.2s → 2.8s (46% improvement)</li>
-<li>Database queries reduced by 60%</li>
+<li>Average response time: 20-30s → 8-9s (3-4x faster!)</li>
+<li>Handled massive flight data generation that broke the old API</li>
+<li>Database queries reduced by 60% through smart caching</li>
+<li>Cached frequent queries (airports, routes, cities, discounts) for instant access</li>
 <li>Zero downtime during migration</li>
 </ul>
 
@@ -220,8 +227,8 @@
             <div class="social-share">
                 <h3>Share this article</h3>
                 <div class="share-buttons">
-                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/nestjs-performance-story.html&title=How%20I%20Cut%20API%20Response%20Time%20by%2025%%20with%20NestJS" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
-                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/nestjs-performance-story.html&text=How%20I%20Cut%20API%20Response%20Time%20by%2025%%20with%20NestJS" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/nestjs-performance-story.html&title=How%20I%20Made%20Our%20API%203-4x%20Faster%20with%20NestJS" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/nestjs-performance-story.html&text=How%20I%20Made%20Our%20API%203-4x%20Faster%20with%20NestJS" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
                 </div>
             </div>
 
