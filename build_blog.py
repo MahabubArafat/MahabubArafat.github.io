@@ -151,6 +151,12 @@ def create_html_from_template(frontmatter, html_content):
     
     <title>{title} | Mahabub Alam Arafat</title>
     <link rel="canonical" href="https://mahabubarafat.online/blog/{slug}.html">
+    
+    <!-- Google AdSense Code -->
+    <meta name="google-adsense-account" content="ca-pub-6705222517983610">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6705222517983610"
+            crossorigin="anonymous"></script>
+    
     <link rel="stylesheet" href="blog_styling.css">
 </head>
 <body>

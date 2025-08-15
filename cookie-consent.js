@@ -399,12 +399,12 @@ class CookieConsent {
     }
 
     loadGoogleAdSense() {
-        // This will be populated with your actual AdSense code
+        // Load Google AdSense with actual publisher ID
         if (window.adsbygoogle_loaded) return;
         
         const script = document.createElement('script');
         script.async = true;
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX';
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6705222517983610';
         script.crossOrigin = 'anonymous';
         document.head.appendChild(script);
         
