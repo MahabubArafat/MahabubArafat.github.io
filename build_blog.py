@@ -107,7 +107,7 @@ def insert_in_article_ads(html_content):
          data-ad-client="ca-pub-6705222517983610"
          data-ad-slot="1879717900"></ins>
     <script>
-         (adsbygoogle = window.adsbygoogle || []).push({{}});
+         (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 </div>
 '''
@@ -164,7 +164,7 @@ def create_html_from_template(frontmatter, html_content):
     category = frontmatter.get('category', 'Technology')
     slug = frontmatter.get('slug', 'blog-post')
     
-    template = f'''<!DOCTYPE html>
+    template = '''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -207,7 +207,7 @@ def create_html_from_template(frontmatter, html_content):
         "@type": "WebPage",
         "@id": "https://mahabubarafat.online/blog/{slug}.html"
       }},
-      "keywords": {json.dumps(frontmatter.get('keywords', []))}
+      "keywords": {keywords_json}
     }}
     </script>
     
@@ -236,7 +236,7 @@ def create_html_from_template(frontmatter, html_content):
                 <div class="article-meta">
                     <div class="meta-item">
                         <span>📅</span>
-                        <time datetime="{date}">{datetime.strptime(date, '%Y-%m-%d').strftime('%B %d, %Y')}</time>
+                        <time datetime="{date}">{formatted_date}</time>
                     </div>
                     <div class="meta-item">
                         <span>⏱️</span>
@@ -258,7 +258,7 @@ def create_html_from_template(frontmatter, html_content):
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({{}});
+                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
             </div>
 
@@ -275,15 +275,15 @@ def create_html_from_template(frontmatter, html_content):
                      data-ad-client="ca-pub-6705222517983610"
                      data-ad-slot="1879717900"></ins>
                 <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({{}});
+                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
             </div>
 
             <div class="social-share">
                 <h3>Share this article</h3>
                 <div class="share-buttons">
-                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/{slug}.html&title={title.replace(' ', '%20')}" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
-                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/{slug}.html&text={title.replace(' ', '%20')}" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/{slug}.html&title={title}" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/{slug}.html&text={title}" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
                 </div>
             </div>
 
@@ -301,7 +301,18 @@ def create_html_from_template(frontmatter, html_content):
 </body>
 </html>'''
     
-    return template
+    return template.format(
+        title=title,
+        description=description,
+        keywords=keywords,
+        date=date,
+        read_time=read_time,
+        category=category,
+        slug=slug,
+        html_content=html_content,
+        formatted_date=datetime.strptime(date, '%Y-%m-%d').strftime('%B %d, %Y'),
+        keywords_json=json.dumps(frontmatter.get('keywords', []))
+    )
 
 def build_blog_post(markdown_file):
     """Build a single blog post from markdown"""
