@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The complete story of transforming a monolithic flight booking system into three specialized microservices, reducing API calls by 60% and DB operations by 80%.">
+    <meta name="keywords" content="microservices, flight-api, system-architecture, performance-optimization, sharetrip, redis-cache, rabbitmq, api-gateway">
+    <meta name="author" content="Mahabub Alam Arafat">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%">
+    <meta property="og:description" content="The complete story of transforming a monolithic flight booking system into three specialized microservices, reducing API calls by 60% and DB operations by 80%.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mahabubarafat.online/blog/flight-api-microservices-transformation.html">
+    <meta property="og:site_name" content="Mahabub Alam Arafat - Portfolio">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%">
+    <meta name="twitter:description" content="The complete story of transforming a monolithic flight booking system into three specialized microservices, reducing API calls by 60% and DB operations by 80%.">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {{"@context": "https://schema.org","@type": "BlogPosting","headline": "From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%","description": "The complete story of transforming a monolithic flight booking system into three specialized microservices, reducing API calls by 60% and DB operations by 80%.","author": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"datePublished": "2024-12-19","dateModified": "2024-12-19","publisher": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"mainEntityOfPage": {{"@type": "WebPage","@id": "https://mahabubarafat.online/blog/flight-api-microservices-transformation.html"}},"keywords": ["microservices", "flight-api", "system-architecture", "performance-optimization", "sharetrip", "redis-cache", "rabbitmq", "api-gateway"]}}
+    </script>
+    
+    <title>From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70% | Mahabub Alam Arafat</title>
+    <link rel="canonical" href="https://mahabubarafat.online/blog/flight-api-microservices-transformation.html">
+    
+    <!-- Google AdSense Code -->
+    <meta name="google-adsense-account" content="ca-pub-6705222517983610">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6705222517983610"
+            crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="blog_styling.css">
+</head>
+<body>
+    <header>
+        <h1>Mahabub Alam Arafat</h1>
+        <p>Software Engineer - Blog</p>
+    </header>
+
+    <div class="container">
+        <a href="../index.html#blog" class="back-link">← Back to Portfolio</a>
+        
+        <article>
+            <header class="article-header">
+                <h1 class="article-title">From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%</h1>
+                <div class="article-meta">
+                    <div class="meta-item">
+                        <span>📅</span>
+                        <time datetime="2024-12-19">December 19, 2024</time>
+                    </div>
+                    <div class="meta-item">
+                        <span>⏱️</span>
+                        <span>14 min read</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>🏷️</span>
+                        <span>Architecture</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content">
+                
+<h1>From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%</h1>
+
+<h2>TL;DR</h2>
+
+<p>Our team at ShareTrip completely transformed a monolithic flight booking system into a three-layer microservices architecture. The result? <strong>70% faster response times</strong>, <strong>60% fewer API calls</strong>, and <strong>80% reduction in database operations</strong>. Here's the complete story of how we went from a single overwhelming codebase to a scalable, maintainable system that handles massive traffic with ease.</p>
+
+<hr>
+
+<h2>The Monster We Had to Tame</h2>
+<div class="ad-container" style="margin: 30px 0; text-align: center;">
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="ca-pub-6705222517983610"
+         data-ad-slot="1879717900"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+
+<p>Picture this: It's 3 AM, and our flight booking system is crawling under peak traffic. Users are complaining about timeouts, the database is screaming for mercy, and our single <code>Flight-Private</code> repository is doing... well, everything.</p>
+
+<p>This monolithic beast was handling:</p>
+<ul>
+<li><strong>Authentication and rate limiting</strong> 🔐</li>
+<li><strong>Business logic and decision making</strong> 🧠</li>
+<li><strong>Database operations</strong> 💾</li>
+<li><strong>Third-party API calls</strong> 🌐</li>
+<li><strong>Cache management</strong> ⚡</li>
+<li><strong>Response formatting</strong> 📝</li>
+<li><strong>Message queue operations</strong> 📨</li>
+</ul>
+
+<p>One repository. One deployment. One massive headache.</p>
+
+<p>The wake-up call came during a flash sale when our system buckled under 10x normal traffic. Response times shot up to 15+ seconds, and we were burning through our third-party API quotas like there was no tomorrow.</p>
+
+<p><strong>The team knew we had to act fast.</strong></p>
+
+<h2>The Architecture Revolution: Enter the Three Musketeers</h2>
+
+<p>After weeks of planning and heated architectural discussions, we designed a three-layer microservices approach that would change everything:</p>
+
+<h3>Layer 1: B2C-Router - The Smart Gateway</h3>
+<p><strong>Role</strong>: Authentication, API rate limiting, and intelligent routing</p>
+
+<pre><code>// Before: Everything mixed together
+app.post('/flight-search', async (req, res) => {
+  // Auth logic mixed with business logic
+  if (!validateToken(req.headers.authorization)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  // Rate limiting mixed with search logic
+  if (await checkRateLimit(req.user.id)) {
+    return res.status(429).json({ error: 'Too many requests' });
+  }
+  
+  // Business logic starts here...
+  const searchResults = await searchFlights(req.body);
+  // ... and continues for 200+ lines
+});
+
+// After: Clean separation in B2C-Router
+app.post('/flight-search', [
+  authenticateUser,
+  rateLimitMiddleware,
+  routeToFlightService
+], async (req, res) => {
+  // Clean routing logic only
+  const response = await forwardToB2CFlight(req);
+  res.json(response);
+});</code></pre>
+
+<h3>Layer 2: B2C-Flight - The Brain</h3>
+<p><strong>Role</strong>: Business logic, database operations, cache management, and queue coordination</p>
+
+<pre><code>// The intelligent orchestrator
+class FlightSearchService {
+  async searchFlights(searchParams: FlightSearchDto): Promise<FlightResponse> {
+    // 1. Check cache first
+    const cachedResults = await this.cacheService.get(searchParams);
+    if (cachedResults) {
+      return this.formatCachedResponse(cachedResults);
+    }
+    
+    // 2. Prepare search strategy
+    const searchStrategy = await this.determineSearchStrategy(searchParams);
+    
+    // 3. Queue the request to Flight-Engine
+    const queueMessage = this.buildEngineMessage(searchParams, searchStrategy);
+    await this.queueService.publish('flight-search-queue', queueMessage);
+    
+    // 4. Wait for processed results
+    const engineResponse = await this.waitForEngineResponse(queueMessage.id);
+    
+    // 5. Apply business logic and save to DB
+    const processedResults = await this.applyBusinessRules(engineResponse);
+    await this.saveSearchResults(processedResults);
+    
+    // 6. Update cache for future requests
+    await this.cacheService.set(searchParams, processedResults);
+    
+    return processedResults;
+  }
+}</code></pre>
+
+<h3>Layer 3: Flight-Engine - The Dumb Parser</h3>
+<p><strong>Role</strong>: Third-party API communication and response parsing</p>
+
+<pre><code>// The focused worker
+class FlightEngineService {
+  async processSearchRequest(message: QueueMessage): Promise<void> {
+    try {
+      // 1. Build API request from queue message
+      const apiRequest = this.buildThirdPartyRequest(message.payload);
+      
+      // 2. Make the actual API call
+      const rawResponse = await this.thirdPartyApiClient.search(apiRequest);
+      
+      // 3. Parse into standardized DTOs
+      const parsedFlights = this.parseFlightResponse(rawResponse);
+      
+      // 4. Cache the parsed response
+      await this.cacheService.setEngineCache(message.searchId, parsedFlights);
+      
+      // 5. Send back to B2C-Flight
+      await this.notifySearchComplete(message.searchId, parsedFlights);
+      
+    } catch (error) {
+      await this.handleEngineError(message, error);
+    }
+  }
+  
+  // No database operations, no business logic - just pure parsing
+  private parseFlightResponse(rawData: any): FlightDto[] {
+    return rawData.flights.map(flight => ({
+      flightNumber: flight.flight_number,
+      airline: flight.airline_code,
+      departure: this.parseDateTime(flight.departure_time),
+      arrival: this.parseDateTime(flight.arrival_time),
+      price: this.parsePrice(flight.pricing),
+      // ... clean, typed parsing
+    }));
+  }
+}</code></pre>
+
+<h2>The Implementation Journey: Blood, Sweat, and Code</h2>
+<div class="ad-container" style="margin: 30px 0; text-align: center;">
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="ca-pub-6705222517983610"
+         data-ad-slot="1879717900"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+
+<h3>Phase 1: The Great Extraction</h3>
+<p>We started by identifying and extracting the authentication and routing logic into B2C-Router. This was like performing surgery on a beating heart - the system had to keep running while we carved out pieces.</p>
+
+<pre><code>// Migration strategy: Gradual extraction
+const routerConfig = {
+  routes: [
+    {
+      path: '/flight-search',
+      method: 'POST',
+      destination: process.env.B2C_FLIGHT_URL,
+      rateLimit: { windowMs: 60000, max: 100 },
+      auth: 'required'
+    }
+  ]
+};</code></pre>
+
+<h3>Phase 2: The Brain Surgery</h3>
+<p>Next came the most complex part - splitting the business logic from the API parsing. We had to:</p>
+
+<p>1. <strong>Identify pure business logic</strong> vs. API-specific code</p>
+<p>2. <strong>Design the message queue contracts</strong> between services</p>
+<p>3. <strong>Implement graceful fallbacks</strong> for when services were unavailable</p>
+
+<pre><code>// Queue message contract design
+interface FlightSearchMessage {
+  id: string;
+  searchParams: FlightSearchDto;
+  strategy: SearchStrategy;
+  priority: 'high' | 'normal' | 'low';
+  timeout: number;
+  callback: {
+    service: 'b2c-flight';
+    endpoint: '/search-complete';
+  };
+}</code></pre>
+
+<h3>Phase 3: The Parser Liberation</h3>
+<p>Finally, we extracted all third-party API logic into Flight-Engine. This service became beautifully simple - it only cared about talking to external APIs and parsing responses.</p>
+
+<pre><code>// Clean separation of concerns
+class AirlineApiAdapter {
+  async search(params: SearchParams): Promise<ParsedFlightData> {
+    const response = await this.httpClient.post('/search', params);
+    return this.responseParser.parse(response.data);
+  }
+}</code></pre>
+
+<h2>The Moment of Truth: Results That Blew Our Minds</h2>
+
+<p>After three months of development and careful migration, we flipped the switch. The results were beyond our wildest expectations:</p>
+
+<h3>Performance Metrics That Speak Volumes</h3>
+
+<table>
+<thead><tr>
+<th>Metric</th>
+<th>Before (Monolith)</th>
+<th>After (Microservices)</th>
+<th>Improvement</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Average Response Time</strong></td>
+<td>8.5 seconds</td>
+<td>2.1 seconds</td>
+<td><strong>70% faster</strong></td>
+</tr>
+<tr>
+<td><strong>Third-party API Calls</strong></td>
+<td>450/minute</td>
+<td>180/minute</td>
+<td><strong>60% reduction</strong></td>
+</tr>
+<tr>
+<td><strong>Database Queries</strong></td>
+<td>1,200/minute</td>
+<td>240/minute</td>
+<td><strong>80% reduction</strong></td>
+</tr>
+<tr>
+<td><strong>Cache Hit Rate</strong></td>
+<td>35%</td>
+<td>78%</td>
+<td><strong>123% improvement</strong></td>
+</tr>
+<tr>
+<td><strong>System Uptime</strong></td>
+<td>97.2%</td>
+<td>99.7%</td>
+<td><strong>2.5% improvement</strong></td>
+</tr>
+<tr>
+<td><strong>Concurrent Users Supported</strong></td>
+<td>500</td>
+<td>2,000+</td>
+<td><strong>300% increase</strong></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Real-World Impact</h3>
+
+<p><strong>The flash sale that broke us before?</strong> We handled it with flying colors (pun intended). Peak traffic of 15,000 concurrent users, and our system didn't even break a sweat.</p>
+
+<p><strong>Customer satisfaction scores</strong> jumped from 3.2/5 to 4.6/5, with users specifically praising the "lightning-fast search results."</p>
+
+<p><strong>Our infrastructure costs</strong> actually went down by 25% despite handling 4x more traffic, thanks to efficient resource utilization across microservices.</p>
+
+<h2>The Technical Deep Dive: How Each Layer Excels</h2>
+
+<h3>B2C-Router: The Gatekeeper's Wisdom</h3>
+<pre><code>// Intelligent rate limiting based on user behavior
+class SmartRateLimiter {
+  async checkLimit(userId: string, endpoint: string): Promise<boolean> {
+    const userTier = await this.getUserTier(userId);
+    const limits = this.getLimitsForTier(userTier);
+    
+    // Different limits for different user types
+    return await this.redis.checkAndIncrement(
+      `${userId}:${endpoint}`, 
+      limits.requests, 
+      limits.windowMs
+    );
+  }
+}</code></pre>
+
+<h3>B2C-Flight: The Orchestration Maestro</h3>
+<pre><code>// Intelligent caching strategy
+class FlightCacheManager {
+  async getCachedResults(searchParams: FlightSearchDto): Promise<FlightResponse | null> {
+    // Multi-layer caching strategy
+    const cacheKey = this.generateCacheKey(searchParams);
+    
+    // L1: In-memory cache (fastest)
+    let cached = await this.memoryCache.get(cacheKey);
+    if (cached) return cached;
+    
+    // L2: Redis cache (fast)
+    cached = await this.redisCache.get(cacheKey);
+    if (cached) {
+      await this.memoryCache.set(cacheKey, cached, 300); // 5 min
+      return cached;
+    }
+    
+    return null;
+  }
+}</code></pre>
+
+<h3>Flight-Engine: The Parsing Perfectionist</h3>
+<pre><code>// Robust error handling and retry logic
+class ThirdPartyApiClient {
+  async makeRequest(config: ApiConfig): Promise<ParsedResponse> {
+    const maxRetries = 3;
+    let lastError: Error;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await this.httpClient.request(config);
+        return this.parseResponse(response);
+      } catch (error) {
+        lastError = error;
+        if (attempt < maxRetries) {
+          await this.delay(Math.pow(2, attempt) * 1000); // Exponential backoff
+        }
+      }
+    }
+    
+    throw new ApiError(`Failed after ${maxRetries} attempts: ${lastError.message}`);
+  }
+}</code></pre>
+
+<h2>Lessons Learned: The Wisdom We Gained</h2>
+
+<h3>1. <strong>Microservices Aren't Magic - They're Strategy</strong></h3>
+<p>The biggest lesson? Microservices solved our specific problems because we understood what those problems were. Don't break apart a monolith just because it's trendy - do it because it serves your architecture goals.</p>
+
+<h3>2. <strong>Queue-Based Communication is a Game Changer</strong></h3>
+<p>Using RabbitMQ between B2C-Flight and Flight-Engine eliminated the tight coupling that was killing our performance. Async processing meant we could handle traffic spikes without everything grinding to a halt.</p>
+
+<h3>3. <strong>Cache Everything, But Cache Smart</strong></h3>
+<p>Our multi-layer caching strategy (memory → Redis → database) reduced our database load by 80%. But the key was understanding what to cache and for how long.</p>
+
+<h3>4. <strong>Monitoring is Non-Negotiable</strong></h3>
+<p>With three services, we needed three times the monitoring. We implemented distributed tracing to follow requests across all services - this saved us countless debugging hours.</p>
+
+<h3>5. <strong>Team Ownership Creates Better Code</strong></h3>
+<p>Each team took ownership of one service. The B2C-Router team became authentication experts, the B2C-Flight team mastered business logic, and the Flight-Engine team perfected API integrations. Specialization led to excellence.</p>
+
+<h2>The Road Ahead: What's Next in Our Architecture Journey</h2>
+
+<h3>Immediate Improvements (Next 3 Months)</h3>
+<ul>
+<li><strong>GraphQL Federation</strong> to give frontend teams more flexibility</li>
+<li><strong>Circuit breakers</strong> for even better resilience</li>
+<li><strong>Auto-scaling</strong> based on queue depth and response times</li>
+</ul>
+
+<h3>Long-term Vision (Next Year)</h3>
+<ul>
+<li><strong>Event sourcing</strong> for better audit trails and debugging</li>
+<li><strong>CQRS pattern</strong> to separate read and write operations</li>
+<li><strong>Machine learning</strong> for intelligent caching and request routing</li>
+</ul>
+
+<h3>The Metrics We're Chasing</h3>
+<ul>
+<li><strong>Sub-1-second response times</strong> for cached results</li>
+<li><strong>99.9% uptime</strong> across all services</li>
+<li><strong>Support for 10,000+ concurrent users</strong> during peak seasons</li>
+</ul>
+
+<h2>Join the Conversation</h2>
+
+<p>This transformation wasn't just about code - it was about changing how our entire team thinks about system design. We went from "how do we fix this?" to "how do we build this right?"</p>
+
+<p><strong>What's your experience with microservices migrations?</strong> Have you faced similar challenges with monolithic systems? I'd love to hear your stories and lessons learned.</p>
+
+<p><strong>Connect with me on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a></strong> - I'm always excited to discuss system architecture, performance optimization, and the real-world challenges of building scalable applications.</p>
+
+<hr>
+
+<p><em>Building great software is a team sport. This transformation was possible because of an incredible team of developers, architects, and DevOps engineers who believed in the vision and executed flawlessly. Here's to building systems that don't just work - they excel.</em></p>
+
+            </div>
+
+            <!-- End of Article Ad -->
+            <div class="ad-container" style="margin: 40px 0; text-align: center;">
+                <ins class="adsbygoogle"
+                     style="display:block; text-align:center;"
+                     data-ad-layout="in-article"
+                     data-ad-format="fluid"
+                     data-ad-client="ca-pub-6705222517983610"
+                     data-ad-slot="1879717900"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="social-share">
+                <h3>Share this article</h3>
+                <div class="share-buttons">
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/flight-api-microservices-transformation.html&title=From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/flight-api-microservices-transformation.html&text=From Monolith to Microservices: How We Rebuilt Our Flight API and Cut Response Time by 70%" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                </div>
+            </div>
+
+            <div class="author-bio">
+                <h3>About the Author</h3>
+                <p><strong>Mahabub Alam Arafat</strong> is a Software Engineer at ShareTrip with 2+ years of production experience. He specializes in backend development, API optimization, and turning legacy systems into modern, maintainable code.</p>
+                <p><a href="../index.html#contact">Get in touch</a> | <a href="https://linkedin.com/in/mahabubarafat" target="_blank">LinkedIn</a> | <a href="https://github.com/MahabubArafat" target="_blank">GitHub</a></p>
+            </div>
+        </article>
+    </div>
+
+    <footer>
+        <p>© 2025 Mahabub Alam Arafat. All rights reserved.</p>
+    </footer>
+</body>
+</html>

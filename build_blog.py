@@ -45,47 +45,126 @@ def parse_frontmatter(content):
 
 def markdown_to_html(markdown_content):
     """Convert markdown to HTML with strategic ad placement"""
-    html = markdown_content
-    
-    # Headers
-    html = re.sub(r'^# (.*$)', r'<h1>\1</h1>', html, flags=re.MULTILINE)
-    html = re.sub(r'^## (.*$)', r'<h2>\1</h2>', html, flags=re.MULTILINE)
-    html = re.sub(r'^### (.*$)', r'<h3>\1</h3>', html, flags=re.MULTILINE)
-    
-    # Bold and italic
-    html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)
-    html = re.sub(r'\*(.*?)\*', r'<em>\1</em>', html)
-    
-    # Code blocks
-    html = re.sub(r'```(\w+)?\n(.*?)```', r'<pre><code>\2</code></pre>', html, flags=re.DOTALL)
-    html = re.sub(r'`([^`]+)`', r'<code>\1</code>', html)
-    
-    # Links
-    html = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', html)
-    
-    # Lists
-    lines = html.split('\n')
-    in_list = False
+    lines = markdown_content.split('\n')
     result_lines = []
+    in_list = False
+    in_code_block = False
+    in_table = False
+    code_block_content = []
+    table_rows = []
     
-    for line in lines:
-        if line.strip().startswith('- ') or line.strip().startswith('* '):
-            if not in_list:
-                result_lines.append('<ul>')
-                in_list = True
-            item = line.strip()[2:]
-            result_lines.append(f'<li>{item}</li>')
-        else:
-            if in_list:
-                result_lines.append('</ul>')
-                in_list = False
-            
-            # Paragraphs
-            if line.strip() and not line.strip().startswith('<'):
-                result_lines.append(f'<p>{line.strip()}</p>')
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        
+        # Handle code blocks
+        if line.strip().startswith('```'):
+            if not in_code_block:
+                # Starting code block
+                in_code_block = True
+                code_block_content = []
+                # Extract language if present
+                lang = line.strip()[3:].strip()
+                i += 1
+                continue
             else:
-                result_lines.append(line)
+                # Ending code block
+                in_code_block = False
+                # Join code content preserving original formatting
+                code_html = '\n'.join(code_block_content)
+                result_lines.append(f'<pre><code>{code_html}</code></pre>')
+                i += 1
+                continue
+        
+        if in_code_block:
+            code_block_content.append(line)
+            i += 1
+            continue
+        
+        # Handle tables
+        if '|' in line and line.strip().startswith('|') and line.strip().endswith('|'):
+            if not in_table:
+                in_table = True
+                table_rows = []
+            
+            # Clean up table row
+            cells = [cell.strip() for cell in line.strip().split('|')[1:-1]]
+            table_rows.append(cells)
+            i += 1
+            continue
+        elif in_table:
+            # End of table - process accumulated rows
+            if table_rows:
+                result_lines.append('<table>')
+                
+                # First row is header
+                if table_rows:
+                    result_lines.append('<thead><tr>')
+                    for cell in table_rows[0]:
+                        processed_cell = process_inline_formatting(cell)
+                        result_lines.append(f'<th>{processed_cell}</th>')
+                    result_lines.append('</tr></thead>')
+                
+                # Skip separator row (usually second row with dashes)
+                start_row = 2 if len(table_rows) > 1 and all('-' in cell for cell in table_rows[1]) else 1
+                
+                # Body rows
+                if len(table_rows) > start_row:
+                    result_lines.append('<tbody>')
+                    for row in table_rows[start_row:]:
+                        result_lines.append('<tr>')
+                        for cell in row:
+                            processed_cell = process_inline_formatting(cell)
+                            result_lines.append(f'<td>{processed_cell}</td>')
+                        result_lines.append('</tr>')
+                    result_lines.append('</tbody>')
+                
+                result_lines.append('</table>')
+            
+            in_table = False
+            # Continue processing current line as normal content (don't increment i yet)
+        
+        if not in_table:
+            # Handle headers
+            if line.startswith('### '):
+                header_text = process_inline_formatting(line[4:])
+                result_lines.append(f'<h3>{header_text}</h3>')
+            elif line.startswith('## '):
+                header_text = process_inline_formatting(line[3:])
+                result_lines.append(f'<h2>{header_text}</h2>')
+            elif line.startswith('# '):
+                header_text = process_inline_formatting(line[2:])
+                result_lines.append(f'<h1>{header_text}</h1>')
+            # Handle lists
+            elif line.strip().startswith('- ') or line.strip().startswith('* '):
+                if not in_list:
+                    result_lines.append('<ul>')
+                    in_list = True
+                item = line.strip()[2:]
+                # Process inline formatting in list items
+                item = process_inline_formatting(item)
+                result_lines.append(f'<li>{item}</li>')
+            else:
+                if in_list:
+                    result_lines.append('</ul>')
+                    in_list = False
+                
+                # Handle empty lines
+                if not line.strip():
+                    result_lines.append('')
+                # Handle horizontal rules
+                elif line.strip() == '---':
+                    result_lines.append('<hr>')
+                # Handle paragraphs
+                elif line.strip() and not line.strip().startswith('<'):
+                    processed_line = process_inline_formatting(line.strip())
+                    result_lines.append(f'<p>{processed_line}</p>')
+                else:
+                    result_lines.append(line)
+        
+        i += 1
     
+    # Close any remaining open tags
     if in_list:
         result_lines.append('</ul>')
     
@@ -93,6 +172,18 @@ def markdown_to_html(markdown_content):
     html_with_ads = insert_in_article_ads('\n'.join(result_lines))
     
     return html_with_ads
+
+def process_inline_formatting(text):
+    """Process inline markdown formatting like bold, italic, code, links"""
+    # Bold
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    # Italic
+    text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
+    # Inline code
+    text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
+    # Links
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    return text
 
 def insert_in_article_ads(html_content):
     """Insert Google AdSense in-article ads at strategic positions"""
@@ -188,27 +279,7 @@ def create_html_from_template(frontmatter, html_content):
     
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {{
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "{title}",
-      "description": "{description}",
-      "author": {{
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      }},
-      "datePublished": "{date}",
-      "dateModified": "{date}",
-      "publisher": {{
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      }},
-      "mainEntityOfPage": {{
-        "@type": "WebPage",
-        "@id": "https://mahabubarafat.online/blog/{slug}.html"
-      }},
-      "keywords": {keywords_json}
-    }}
+    {{"@context": "https://schema.org","@type": "BlogPosting","headline": "{title}","description": "{description}","author": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"datePublished": "{date}","dateModified": "{date}","publisher": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"mainEntityOfPage": {{"@type": "WebPage","@id": "https://mahabubarafat.online/blog/{slug}.html"}},"keywords": {keywords_json}}}
     </script>
     
     <title>{title} | Mahabub Alam Arafat</title>
@@ -249,19 +320,6 @@ def create_html_from_template(frontmatter, html_content):
                 </div>
             </header>
 
-            <!-- Display Ad - Top of Article -->
-            <div style="text-align: center; margin: 30px 0;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-6705222517983610"
-                     data-ad-slot="3215730742"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-
             <div class="content">
                 {html_content}
             </div>
@@ -301,18 +359,20 @@ def create_html_from_template(frontmatter, html_content):
 </body>
 </html>'''
     
-    return template.format(
-        title=title,
-        description=description,
-        keywords=keywords,
-        date=date,
-        read_time=read_time,
-        category=category,
-        slug=slug,
-        html_content=html_content,
-        formatted_date=datetime.strptime(date, '%Y-%m-%d').strftime('%B %d, %Y'),
-        keywords_json=json.dumps(frontmatter.get('keywords', []))
-    )
+    # Use string replace instead of format to avoid issues with curly braces in content
+    html = template
+    html = html.replace('{title}', title)
+    html = html.replace('{description}', description)
+    html = html.replace('{keywords}', keywords)
+    html = html.replace('{date}', date)
+    html = html.replace('{read_time}', read_time)
+    html = html.replace('{category}', category)
+    html = html.replace('{slug}', slug)
+    html = html.replace('{html_content}', html_content)
+    html = html.replace('{formatted_date}', datetime.strptime(date, '%Y-%m-%d').strftime('%B %d, %Y'))
+    html = html.replace('{keywords_json}', json.dumps(frontmatter.get('keywords', [])))
+    
+    return html
 
 def build_blog_post(markdown_file):
     """Build a single blog post from markdown"""
@@ -359,7 +419,7 @@ def main():
     
     # Build all markdown files
     for md_file in markdown_dir.glob("*.md"):
-        if md_file.name != 'template.md':  # Skip template
+        if md_file.name not in ['template.md', 'README.md', 'ADSENSE_SETUP.md']:  # Skip template and docs
             post_info = build_blog_post(md_file)
             if post_info:
                 built_posts.append(post_info)

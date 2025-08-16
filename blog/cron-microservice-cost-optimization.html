@@ -22,27 +22,7 @@
     
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "From 30% Cost Savings to Zero Downtime: Building a Centralized Cron Microservice",
-      "description": "How I eliminated wasteful database operations and built a scalable cron system that saved 30% on AWS costs while improving performance. The story of smart caching and microservice architecture.",
-      "author": {
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      },
-      "datePublished": "2025-01-17",
-      "dateModified": "2025-01-17",
-      "publisher": {
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html"
-      },
-      "keywords": ["Microservices", "AWS Cost Optimization", "Cron Jobs", "Redis", "Database Optimization", "ShareTrip", "Architecture", "Scalability"]
-    }
+    {{"@context": "https://schema.org","@type": "BlogPosting","headline": "From 30% Cost Savings to Zero Downtime: Building a Centralized Cron Microservice","description": "How I eliminated wasteful database operations and built a scalable cron system that saved 30% on AWS costs while improving performance. The story of smart caching and microservice architecture.","author": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"datePublished": "2025-01-17","dateModified": "2025-01-17","publisher": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"mainEntityOfPage": {{"@type": "WebPage","@id": "https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html"}},"keywords": ["Microservices", "AWS Cost Optimization", "Cron Jobs", "Redis", "Database Optimization", "ShareTrip", "Architecture", "Scalability"]}}
     </script>
     
     <title>From 30% Cost Savings to Zero Downtime: Building a Centralized Cron Microservice | Mahabub Alam Arafat</title>
@@ -83,47 +63,33 @@
                 </div>
             </header>
 
-            <!-- Display Ad - Top of Article -->
-            <div style="text-align: center; margin: 30px 0;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-6705222517983610"
-                     data-ad-slot="3215730742"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-
             <div class="content">
                 
 <h1>From 30% Cost Savings to Zero Downtime: Building a Centralized Cron Microservice</h1>
 
-<strong>TL;DR:</strong> We were burning money on AWS RDS by storing 4,000-5,000 flight search results per international search, only to delete 99.9% of them later. With a 1000:1 search-to-booking ratio, we were essentially paying premium prices to store garbage. I built a centralized cron microservice that eliminated this waste, saved 30% on AWS costs, and improved performance. Here's the complete story.
+<p><strong>TL;DR:</strong> We were burning money on AWS RDS by storing 4,000-5,000 flight search results per international search, only to delete 99.9% of them later. With a 1000:1 search-to-booking ratio, we were essentially paying premium prices to store garbage. I built a centralized cron microservice that eliminated this waste, saved 30% on AWS costs, and improved performance. Here's the complete story.</p>
 
 <h2>The Expensive Problem: When Analytics Costs More Than Revenue</h2>
 
 <p>Picture this: Every time someone searches for an international flight on ShareTrip, we generate 400-500 search results from multiple providers. Sounds normal, right?</p>
 
-<strong>Here's the crazy part:</strong> We were storing ALL of them in AWS RDS. Every single search result. For analytics. 
+<p><strong>Here's the crazy part:</strong> We were storing ALL of them in AWS RDS. Every single search result. For analytics.</p>
 
 <h3>The Math That Made Everyone Cringe</h3>
 
-<pre><code><h1>The brutal reality</h1>
-<p>1 international flight search = 400-500 results</p>
-<p>Each result = Multiple table insertions (flights, segments, pricing, etc.)</p>
-<p>Total DB operations per search = 4,000-5,000 inserts</p>
+<pre><code># The brutal reality
+1 international flight search = 400-500 results
+Each result = Multiple table insertions (flights, segments, pricing, etc.)
+Total DB operations per search = 4,000-5,000 inserts
 
-<h1>Our conversion rate</h1>
-<p>Search to booking ratio = 1000:1</p>
-<p>Meaning: 999 out of 1000 searches never convert to bookings</p>
+# Our conversion rate
+Search to booking ratio = 1000:1
+Meaning: 999 out of 1000 searches never convert to bookings
 
-<h1>The waste</h1>
-<p>999 searches × 4,500 average inserts = 4.5 million pointless DB operations</p>
-<p>All stored in expensive AWS RDS</p>
-<p>All deleted by a cron job at end of day 🤦‍♂️</p>
-</code></pre>
+# The waste
+999 searches × 4,500 average inserts = 4.5 million pointless DB operations
+All stored in expensive AWS RDS
+All deleted by a cron job at end of day 🤦‍♂️</code></pre>
 
 <p>> <strong>The Wake-Up Call:</strong> Our AWS RDS bill was growing faster than our revenue. We were literally paying premium prices to store data we'd delete within 24 hours.</p>
 
@@ -144,44 +110,40 @@
 <h3>How It "Worked" Before</h3>
 
 <pre><code>graph TD
-<p>A[User Search] --> B[Generate 500 Results]</p>
-<p>B --> C[Insert ALL to RDS]</p>
-<p>C --> D[User Books 1 Flight]</p>
-<p>D --> E[Mark 1 Result as Booked]</p>
-<p>E --> F[End of Day Cron]</p>
-<p>F --> G[Extract Analytics from 499 Unbooked]</p>
-<p>G --> H[Update Analytics Table]</p>
-<p>H --> I[DELETE 499 Results]</p>
-<p>I --> J[💰 Money Burned]</p>
-</code></pre>
+    A[User Search] --> B[Generate 500 Results]
+    B --> C[Insert ALL to RDS]
+    C --> D[User Books 1 Flight]
+    D --> E[Mark 1 Result as Booked]
+    E --> F[End of Day Cron]
+    F --> G[Extract Analytics from 499 Unbooked]
+    G --> H[Update Analytics Table]
+    H --> I[DELETE 499 Results]
+    I --> J[💰 Money Burned]</code></pre>
 
 <h3>The Daily Waste Cycle</h3>
 
-<strong>Morning:</strong> Fresh RDS, ready for action
+<p><strong>Morning:</strong> Fresh RDS, ready for action</p>
 <pre><code>-- Clean slate
-<p>SELECT COUNT(*) FROM flight_search_results;</p>
-<p>-- Result: 0</p>
-</code></pre>
+SELECT COUNT(*) FROM flight_search_results; 
+-- Result: 0</code></pre>
 
-<strong>Throughout the Day:</strong> Accumulating expensive data
+<p><strong>Throughout the Day:</strong> Accumulating expensive data</p>
 <pre><code>-- After 1000 searches
-<p>SELECT COUNT(*) FROM flight_search_results;</p>
-<p>-- Result: 4,500,000 rows (mostly garbage)</p>
-</code></pre>
+SELECT COUNT(*) FROM flight_search_results; 
+-- Result: 4,500,000 rows (mostly garbage)</code></pre>
 
-<strong>End of Day Cron:</strong> The expensive cleanup
+<p><strong>End of Day Cron:</strong> The expensive cleanup</p>
 <pre><code>-- The daily purge
-<p>DELETE FROM flight_search_results</p>
-<p>WHERE booking_id IS NULL;</p>
-<p>-- Deleted: 4,455,000 rows (99.9% of everything)</p>
+DELETE FROM flight_search_results 
+WHERE booking_id IS NULL; 
+-- Deleted: 4,455,000 rows (99.9% of everything)
 
-<p>-- Update analytics</p>
-<p>INSERT INTO search_analytics</p>
-<p>SELECT provider, route, count(*)</p>
-<p>FROM deleted_data;</p>
-</code></pre>
+-- Update analytics
+INSERT INTO search_analytics 
+SELECT provider, route, count(*) 
+FROM deleted_data;</code></pre>
 
-<strong>The Cost:</strong> 
+<p><strong>The Cost:</strong></p>
 <ul>
 <li>RDS storage for millions of temporary rows</li>
 <li>Compute for massive INSERT operations</li>
@@ -225,27 +187,26 @@
 <p>Instead of scattered cron jobs across different services, I proposed a <strong>centralized cron microservice</strong>:</p>
 
 <pre><code>// The new architecture
-<p>@Injectable()</p>
-<p>export class CronOrchestrator {</p>
-<p>private readonly jobs = new Map<string, CronJob>();</p>
+@Injectable()
+export class CronOrchestrator {
+  private readonly jobs = new Map<string, CronJob>();
   
-<p>constructor(</p>
-<p>private readonly redisService: RedisService,</p>
-<p>private readonly analyticsService: AnalyticsService,</p>
-<p>private readonly logger: Logger</p>
-<p>) {}</p>
+  constructor(
+    private readonly redisService: RedisService,
+    private readonly analyticsService: AnalyticsService,
+    private readonly logger: Logger
+  ) {}
 
-<p>@Cron('<em>/30 </em> <em> </em> *') // Every 30 minutes</p>
-<p>async processFlightAnalytics() {</p>
-<p>await this.extractAnalyticsFromRedis();</p>
-<p>await this.cleanupProcessedData();</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+  @Cron('*/30 * * * *') // Every 30 minutes
+  async processFlightAnalytics() {
+    await this.extractAnalyticsFromRedis();
+    await this.cleanupProcessedData();
+  }
+}</code></pre>
 
 <h3>Why Centralized Cron Jobs?</h3>
 
-<strong>Before: Distributed Chaos</strong>
+<p><strong>Before: Distributed Chaos</strong></p>
 <ul>
 <li>Flight service had its cleanup cron</li>
 <li>Booking service had its reminder cron</li>
@@ -255,7 +216,7 @@
 <li>Failures went unnoticed</li>
 </ul>
 
-<strong>After: Orchestrated Efficiency</strong>
+<p><strong>After: Orchestrated Efficiency</strong></p>
 <ul>
 <li>Single service manages all scheduled tasks</li>
 <li>Centralized logging and monitoring</li>
@@ -269,121 +230,113 @@
 <h3>Step 1: Redis-First Analytics Collection</h3>
 
 <pre><code>@Injectable()
-<p>export class FlightAnalyticsProcessor {</p>
+export class FlightAnalyticsProcessor {
   
-<p>async extractAnalyticsFromRedis(): Promise<void> {</p>
-<p>const searchKeys = await this.redis.keys('flight_search:*');</p>
-<p>const analyticsData = new Map<string, SearchMetrics>();</p>
+  async extractAnalyticsFromRedis(): Promise<void> {
+    const searchKeys = await this.redis.keys('flight_search:*');
+    const analyticsData = new Map<string, SearchMetrics>();
     
-<p>for (const key of searchKeys) {</p>
-<p>const searchData = await this.redis.get(key);</p>
-<p>const flightData = JSON.parse(searchData);</p>
+    for (const key of searchKeys) {
+      const searchData = await this.redis.get(key);
+      const flightData = JSON.parse(searchData);
       
-<p>// Extract analytics without touching RDS</p>
-<p>this.aggregateMetrics(flightData, analyticsData);</p>
-<p>}</p>
+      // Extract analytics without touching RDS
+      this.aggregateMetrics(flightData, analyticsData);
+    }
     
-<p>// Bulk update analytics table</p>
-<p>await this.updateAnalyticsTable(analyticsData);</p>
+    // Bulk update analytics table
+    await this.updateAnalyticsTable(analyticsData);
     
-<p>// Clean up processed Redis data</p>
-<p>await this.cleanupRedisData(searchKeys);</p>
-<p>}</p>
+    // Clean up processed Redis data
+    await this.cleanupRedisData(searchKeys);
+  }
   
-<p>private aggregateMetrics(flightData: any, metrics: Map<string, SearchMetrics>) {</p>
-<p>const key = <code>${flightData.provider}_${flightData.route}</code>;</p>
-<p>const existing = metrics.get(key) || new SearchMetrics();</p>
+  private aggregateMetrics(flightData: any, metrics: Map<string, SearchMetrics>) {
+    const key = `${flightData.provider}_${flightData.route}`;
+    const existing = metrics.get(key) || new SearchMetrics();
     
-<p>existing.searchCount++;</p>
-<p>existing.averagePrice = this.calculateAverage(existing, flightData.price);</p>
-<p>existing.popularTimes.push(flightData.searchTime);</p>
+    existing.searchCount++;
+    existing.averagePrice = this.calculateAverage(existing, flightData.price);
+    existing.popularTimes.push(flightData.searchTime);
     
-<p>metrics.set(key, existing);</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+    metrics.set(key, existing);
+  }
+}</code></pre>
 
 <h3>Step 2: Intelligent Data Lifecycle</h3>
 
 <pre><code>// The new flow - no more RDS waste
-<p>class FlightSearchService {</p>
+class FlightSearchService {
   
-<p>async searchFlights(criteria: SearchCriteria): Promise<FlightResult[]> {</p>
-<p>const searchId = generateSearchId();</p>
-<p>const results = await this.aggregateFromProviders(criteria);</p>
+  async searchFlights(criteria: SearchCriteria): Promise<FlightResult[]> {
+    const searchId = generateSearchId();
+    const results = await this.aggregateFromProviders(criteria);
     
-<p>// Store in Redis with TTL (not RDS!)</p>
-<p>await this.redis.setex(</p>
-      <code>flight_search:${searchId}</code>, 
-<p>3600, // 1 hour TTL</p>
-<p>JSON.stringify({</p>
-<p>searchId,</p>
-<p>criteria,</p>
-<p>results,</p>
-<p>timestamp: new Date(),</p>
-<p>provider: 'multiple'</p>
-<p>})</p>
-<p>);</p>
+    // Store in Redis with TTL (not RDS!)
+    await this.redis.setex(
+      `flight_search:${searchId}`, 
+      3600, // 1 hour TTL
+      JSON.stringify({
+        searchId,
+        criteria,
+        results,
+        timestamp: new Date(),
+        provider: 'multiple'
+      })
+    );
     
-<p>return results;</p>
-<p>}</p>
+    return results;
+  }
   
-<p>async bookFlight(searchId: string, flightId: string): Promise<Booking> {</p>
-<p>// Only NOW do we touch RDS</p>
-<p>const searchData = await this.redis.get(<code>flight_search:${searchId}</code>);</p>
-<p>const selectedFlight = this.findFlightById(searchData, flightId);</p>
+  async bookFlight(searchId: string, flightId: string): Promise<Booking> {
+    // Only NOW do we touch RDS
+    const searchData = await this.redis.get(`flight_search:${searchId}`);
+    const selectedFlight = this.findFlightById(searchData, flightId);
     
-<p>// Store the actual booking (permanent data)</p>
-<p>const booking = await this.bookingRepository.save({</p>
-<p>...selectedFlight,</p>
-<p>bookingId: generateBookingId(),</p>
-<p>status: 'confirmed'</p>
-<p>});</p>
+    // Store the actual booking (permanent data)
+    const booking = await this.bookingRepository.save({
+      ...selectedFlight,
+      bookingId: generateBookingId(),
+      status: 'confirmed'
+    });
     
-<p>return booking;</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+    return booking;
+  }
+}</code></pre>
 
 <h2>The Results: Numbers That Made Everyone Happy</h2>
 
 <h3>Cost Optimization Breakdown</h3>
 
-<strong>Before the Microservice:</strong>
+<p><strong>Before the Microservice:</strong></p>
 <pre><code>Daily RDS Operations:
-<ul>
-<li>Inserts: 4.5M rows/day × $0.0001/operation = $450/day</li>
-<li>Storage: 4.5M rows × 2KB × $0.023/GB/month = $207/month</li>
-<li>Deletes: 4.45M rows/day × $0.0001/operation = $445/day</li>
-<li>Network I/O: ~50GB/day × $0.01/GB = $0.50/day</li>
-</ul>
+- Inserts: 4.5M rows/day × $0.0001/operation = $450/day
+- Storage: 4.5M rows × 2KB × $0.023/GB/month = $207/month  
+- Deletes: 4.45M rows/day × $0.0001/operation = $445/day
+- Network I/O: ~50GB/day × $0.01/GB = $0.50/day
 
-<p>Monthly RDS Cost: ~$27,000</p>
-</code></pre>
+Monthly RDS Cost: ~$27,000</code></pre>
 
-<strong>After the Microservice:</strong>
+<p><strong>After the Microservice:</strong></p>
 <pre><code>Daily Operations:
-<ul>
-<li>Redis operations: 4.5M × $0.000001 = $4.50/day</li>
-<li>Analytics inserts: ~1000 rows/day × $0.0001 = $0.10/day</li>
-<li>Booking inserts: ~4.5 rows/day × $0.0001 = $0.0005/day</li>
-<li>Redis storage: 50GB × $0.02/GB = $1.00/day</li>
-</ul>
+- Redis operations: 4.5M × $0.000001 = $4.50/day
+- Analytics inserts: ~1000 rows/day × $0.0001 = $0.10/day  
+- Booking inserts: ~4.5 rows/day × $0.0001 = $0.0005/day
+- Redis storage: 50GB × $0.02/GB = $1.00/day
 
-<p>Monthly Cost: ~$18,900</p>
-<p>Savings: $8,100/month (30% reduction!)</p>
-</code></pre>
+Monthly Cost: ~$18,900
+Savings: $8,100/month (30% reduction!)</code></pre>
 
 <h3>Performance Improvements</h3>
 
-<strong>🚀 Speed Gains:</strong>
+<p><strong>🚀 Speed Gains:</strong></p>
 <ul>
 <li>Search response time: 2.8s → 1.9s (32% faster)</li>
 <li>Analytics processing: 45 minutes → 2 minutes (95% faster)</li>
 <li>End-of-day cleanup: 2 hours → 5 minutes (96% faster)</li>
 </ul>
 
-<strong>📊 Operational Benefits:</strong>
+<p><strong>📊 Operational Benefits:</strong></p>
 <ul>
 <li>Zero downtime during migration</li>
 <li>Reduced RDS load by 90%</li>
@@ -396,144 +349,139 @@
 <h3>Service Structure</h3>
 
 <pre><code>// Centralized cron microservice structure
-<p>src/</p>
-<p>├── cron/</p>
-<p>│   ├── cron.controller.ts      # Health checks and manual triggers</p>
-<p>│   ├── cron.service.ts         # Job orchestration</p>
-<p>│   └── jobs/</p>
-<p>│       ├── flight-analytics.job.ts</p>
-<p>│       ├── booking-reminders.job.ts</p>
-<p>│       └── payment-reconciliation.job.ts</p>
-<p>├── processors/</p>
-<p>│   ├── analytics.processor.ts   # Redis → Analytics logic</p>
-<p>│   ├── cleanup.processor.ts     # Data lifecycle management</p>
-<p>│   └── notification.processor.ts</p>
-<p>└── shared/</p>
-<p>├── redis.service.ts</p>
-<p>├── monitoring.service.ts</p>
-<p>└── types/</p>
-</code></pre>
+src/
+├── cron/
+│   ├── cron.controller.ts      # Health checks and manual triggers
+│   ├── cron.service.ts         # Job orchestration
+│   └── jobs/
+│       ├── flight-analytics.job.ts
+│       ├── booking-reminders.job.ts
+│       └── payment-reconciliation.job.ts
+├── processors/
+│   ├── analytics.processor.ts   # Redis → Analytics logic
+│   ├── cleanup.processor.ts     # Data lifecycle management
+│   └── notification.processor.ts
+└── shared/
+    ├── redis.service.ts
+    ├── monitoring.service.ts
+    └── types/</code></pre>
 
 <h3>Scalability Features</h3>
 
 <pre><code>@Injectable()
-<p>export class ScalableCronService {</p>
+export class ScalableCronService {
   
-<p>// Distributed job execution</p>
-<p>@Cron('<em>/30 </em> <em> </em> *')</p>
-<p>async processAnalytics() {</p>
-<p>const jobId = <code>analytics_${Date.now()}</code>;</p>
+  // Distributed job execution
+  @Cron('*/30 * * * *')
+  async processAnalytics() {
+    const jobId = `analytics_${Date.now()}`;
     
-<p>// Prevent duplicate execution across instances</p>
-<p>const lock = await this.redis.setnx(<code>job_lock:${jobId}</code>, 'locked');</p>
-<p>if (!lock) {</p>
-<p>this.logger.log('Job already running on another instance');</p>
-<p>return;</p>
-<p>}</p>
+    // Prevent duplicate execution across instances
+    const lock = await this.redis.setnx(`job_lock:${jobId}`, 'locked');
+    if (!lock) {
+      this.logger.log('Job already running on another instance');
+      return;
+    }
     
-<p>try {</p>
-<p>await this.executeAnalyticsJob(jobId);</p>
-<p>} finally {</p>
-<p>await this.redis.del(<code>job_lock:${jobId}</code>);</p>
-<p>}</p>
-<p>}</p>
+    try {
+      await this.executeAnalyticsJob(jobId);
+    } finally {
+      await this.redis.del(`job_lock:${jobId}`);
+    }
+  }
   
-<p>// Batch processing for large datasets</p>
-<p>async executeAnalyticsJob(jobId: string) {</p>
-<p>const batchSize = 1000;</p>
-<p>let processed = 0;</p>
+  // Batch processing for large datasets
+  async executeAnalyticsJob(jobId: string) {
+    const batchSize = 1000;
+    let processed = 0;
     
-<p>while (true) {</p>
-<p>const batch = await this.getNextBatch(processed, batchSize);</p>
-<p>if (batch.length === 0) break;</p>
+    while (true) {
+      const batch = await this.getNextBatch(processed, batchSize);
+      if (batch.length === 0) break;
       
-<p>await this.processBatch(batch);</p>
-<p>processed += batch.length;</p>
+      await this.processBatch(batch);
+      processed += batch.length;
       
-<p>// Progress tracking</p>
-<p>await this.updateJobProgress(jobId, processed);</p>
-<p>}</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+      // Progress tracking
+      await this.updateJobProgress(jobId, processed);
+    }
+  }
+}</code></pre>
 
 <h2>Challenges and Solutions</h2>
 
 <h3>Challenge 1: Data Consistency During Migration</h3>
 
-<strong>Problem:</strong> How do we migrate without losing data or breaking analytics?
+<p><strong>Problem:</strong> How do we migrate without losing data or breaking analytics?</p>
 
-<strong>Solution:</strong> Dual-write pattern with gradual migration
+<p><strong>Solution:</strong> Dual-write pattern with gradual migration</p>
 <pre><code>// Transition period - write to both systems
-<p>async storeSearchResults(data: SearchData) {</p>
-<p>// New way (Redis)</p>
-<p>await this.redis.setex(<code>flight_search:${data.id}</code>, 3600, JSON.stringify(data));</p>
+async storeSearchResults(data: SearchData) {
+  // New way (Redis)
+  await this.redis.setex(`flight_search:${data.id}`, 3600, JSON.stringify(data));
   
-<p>// Old way (RDS) - during migration only</p>
-<p>if (this.config.MIGRATION_MODE) {</p>
-<p>await this.legacyRepository.save(data);</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+  // Old way (RDS) - during migration only
+  if (this.config.MIGRATION_MODE) {
+    await this.legacyRepository.save(data);
+  }
+}</code></pre>
 
 <h3>Challenge 2: Redis Memory Management</h3>
 
-<strong>Problem:</strong> Redis running out of memory with large datasets
+<p><strong>Problem:</strong> Redis running out of memory with large datasets</p>
 
-<strong>Solution:</strong> Smart TTL and data compression
+<p><strong>Solution:</strong> Smart TTL and data compression</p>
 <pre><code>// Intelligent data lifecycle
-<p>async storeWithSmartTTL(key: string, data: any) {</p>
-<p>const compressed = this.compressData(data);</p>
-<p>const ttl = this.calculateOptimalTTL(data.type);</p>
+async storeWithSmartTTL(key: string, data: any) {
+  const compressed = this.compressData(data);
+  const ttl = this.calculateOptimalTTL(data.type);
   
-<p>await this.redis.setex(key, ttl, compressed);</p>
+  await this.redis.setex(key, ttl, compressed);
   
-<p>// Monitor memory usage</p>
-<p>const memoryUsage = await this.redis.memory('usage', key);</p>
-<p>if (memoryUsage > this.config.MAX_KEY_SIZE) {</p>
-<p>await this.archiveToS3(key, data);</p>
-<p>await this.redis.del(key);</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+  // Monitor memory usage
+  const memoryUsage = await this.redis.memory('usage', key);
+  if (memoryUsage > this.config.MAX_KEY_SIZE) {
+    await this.archiveToS3(key, data);
+    await this.redis.del(key);
+  }
+}</code></pre>
 
 <h3>Challenge 3: Monitoring and Observability</h3>
 
-<strong>Problem:</strong> How do we know if cron jobs are working properly?
+<p><strong>Problem:</strong> How do we know if cron jobs are working properly?</p>
 
-<strong>Solution:</strong> Comprehensive monitoring with Grafana dashboards
+<p><strong>Solution:</strong> Comprehensive monitoring with Grafana dashboards</p>
 <pre><code>@Injectable()
-<p>export class CronMonitoringService {</p>
+export class CronMonitoringService {
   
-<p>async recordJobExecution(jobName: string, duration: number, status: 'success' | 'failed') {</p>
-<p>// Metrics for Grafana</p>
-<p>this.metricsService.histogram('cron_job_duration', duration, { job: jobName });</p>
-<p>this.metricsService.counter('cron_job_executions', 1, { job: jobName, status });</p>
+  async recordJobExecution(jobName: string, duration: number, status: 'success' | 'failed') {
+    // Metrics for Grafana
+    this.metricsService.histogram('cron_job_duration', duration, { job: jobName });
+    this.metricsService.counter('cron_job_executions', 1, { job: jobName, status });
     
-<p>// Alerting</p>
-<p>if (status === 'failed') {</p>
-<p>await this.alertingService.sendAlert({</p>
-<p>severity: 'high',</p>
-<p>message: <code>Cron job ${jobName} failed</code>,</p>
-<p>duration</p>
-<p>});</p>
-<p>}</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+    // Alerting
+    if (status === 'failed') {
+      await this.alertingService.sendAlert({
+        severity: 'high',
+        message: `Cron job ${jobName} failed`,
+        duration
+      });
+    }
+  }
+}</code></pre>
 
 <h2>The Team Impact: Beyond Cost Savings</h2>
 
 <h3>Developer Experience Improvements</h3>
 
-<strong>Before:</strong> 
+<p><strong>Before:</strong></p>
 <ul>
 <li>"The analytics cron failed again" 😤</li>
 <li>"Why is RDS so slow today?" 🐌</li>
 <li>"We're over budget on AWS again" 💸</li>
 </ul>
 
-<strong>After:</strong>
+<p><strong>After:</strong></p>
 <ul>
 <li>"Analytics are updating every 30 minutes automatically" ✅</li>
 <li>"RDS performance is consistently good" 🚀</li>
@@ -542,12 +490,11 @@
 
 <h3>Operational Excellence</h3>
 
-<pre><code><h1>Monitoring dashboard metrics</h1>
-<p>Cron Job Success Rate: 99.8%</p>
-<p>Average Job Duration: 2.3 minutes (down from 45 minutes)</p>
-<p>Failed Jobs This Month: 2 (down from 45)</p>
-<p>Cost per Analytics Update: $0.02 (down from $12.50)</p>
-</code></pre>
+<pre><code># Monitoring dashboard metrics
+Cron Job Success Rate: 99.8%
+Average Job Duration: 2.3 minutes (down from 45 minutes)
+Failed Jobs This Month: 2 (down from 45)
+Cost per Analytics Update: $0.02 (down from $12.50)</code></pre>
 
 <h2>Lessons Learned: Architecture Wisdom</h2>
 
@@ -606,11 +553,11 @@
 <p>4. <strong>Build monitoring first</strong> - You need visibility</p>
 <p>5. <strong>Migrate gradually</strong> - Dual-write during transition</p>
 
-<p>---</p>
+<hr>
 
-<strong>The Bottom Line:</strong> Sometimes the best optimization isn't making things faster - it's eliminating unnecessary work entirely. We saved 30% on AWS costs not by optimizing database queries, but by questioning why we were using the database at all.
+<p><strong>The Bottom Line:</strong> Sometimes the best optimization isn't making things faster - it's eliminating unnecessary work entirely. We saved 30% on AWS costs not by optimizing database queries, but by questioning why we were using the database at all.</p>
 
-<em>Building cost-effective architectures? I'd love to hear about your optimization strategies. Connect with me on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - let's discuss smart architecture patterns and cost optimization techniques.</em>
+<p><em>Building cost-effective architectures? I'd love to hear about your optimization strategies. Connect with me on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - let's discuss smart architecture patterns and cost optimization techniques.</em></p>
 
             </div>
 
@@ -630,8 +577,8 @@
             <div class="social-share">
                 <h3>Share this article</h3>
                 <div class="share-buttons">
-                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html&title=From%2030%%20Cost%20Savings%20to%20Zero%20Downtime:%20Building%20a%20Centralized%20Cron%20Microservice" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
-                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html&text=From%2030%%20Cost%20Savings%20to%20Zero%20Downtime:%20Building%20a%20Centralized%20Cron%20Microservice" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html&title=From 30% Cost Savings to Zero Downtime: Building a Centralized Cron Microservice" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html&text=From 30% Cost Savings to Zero Downtime: Building a Centralized Cron Microservice" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
                 </div>
             </div>
 

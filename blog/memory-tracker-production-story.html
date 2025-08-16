@@ -22,27 +22,7 @@
     
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "How I Built a Custom Memory Tracker That Saved Our Production API",
-      "description": "The story of how a custom memory profiling package solved a company-wide production mystery that had everyone stumped. From heap crashes to the root cause.",
-      "author": {
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      },
-      "datePublished": "2025-01-16",
-      "dateModified": "2025-01-16",
-      "publisher": {
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://mahabubarafat.online/blog/memory-tracker-production-story.html"
-      },
-      "keywords": ["Node.js", "Memory Management", "NestJS", "Production Debugging", "Memory Leaks", "ShareTrip", "NPM Package"]
-    }
+    {{"@context": "https://schema.org","@type": "BlogPosting","headline": "How I Built a Custom Memory Tracker That Saved Our Production API","description": "The story of how a custom memory profiling package solved a company-wide production mystery that had everyone stumped. From heap crashes to the root cause.","author": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"datePublished": "2025-01-16","dateModified": "2025-01-16","publisher": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"mainEntityOfPage": {{"@type": "WebPage","@id": "https://mahabubarafat.online/blog/memory-tracker-production-story.html"}},"keywords": ["Node.js", "Memory Management", "NestJS", "Production Debugging", "Memory Leaks", "ShareTrip", "NPM Package"]}}
     </script>
     
     <title>How I Built a Custom Memory Tracker That Saved Our Production API | Mahabub Alam Arafat</title>
@@ -83,30 +63,17 @@
                 </div>
             </header>
 
-            <!-- Display Ad - Top of Article -->
-            <div style="text-align: center; margin: 30px 0;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-6705222517983610"
-                     data-ad-slot="3215730742"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-
             <div class="content">
                 
 <h1>How I Built a Custom Memory Tracker That Saved Our Production API</h1>
 
-<strong>TL;DR:</strong> Our production API kept crashing with "JavaScript heap out of memory" errors. The entire company was hunting for the bug - leads, seniors, DevOps - nobody could find it. So I built a custom memory tracking package that pinpointed the exact function causing the leak. Turns out, a missing <code>bookingCode</code> was returning entire database tables. Here's the whole story.
+<p><strong>TL;DR:</strong> Our production API kept crashing with "JavaScript heap out of memory" errors. The entire company was hunting for the bug - leads, seniors, DevOps - nobody could find it. So I built a custom memory tracking package that pinpointed the exact function causing the leak. Turns out, a missing <code>bookingCode</code> was returning entire database tables. Here's the whole story.</p>
 
 <h2>The Crisis: When Production Goes Down and Nobody Knows Why</h2>
 
 <p>Picture this: It's a regular Tuesday morning, and suddenly our production API starts throwing <code>JavaScript heap out of memory</code> errors. The app restarts, runs fine for a while, then crashes again. Rinse and repeat.</p>
 
-<strong>The Response Team:</strong>
+<p><strong>The Response Team:</strong></p>
 <ul>
 <li>All team leads: ✅ Mobilized</li>
 <li>Senior developers: ✅ On the case</li>
@@ -141,14 +108,13 @@
 </ul>
 
 <p>Our existing monitoring showed:</p>
-<pre><code><h1>What we could see</h1>
-<p>✅ API response times: Normal (2-3 seconds)</p>
-<p>✅ CPU usage: Healthy (30-40%)</p>
-<p>✅ Database connections: Stable</p>
-<p>❌ Memory usage: "It goes up sometimes" 🤷‍♂️</p>
-</code></pre>
+<pre><code># What we could see
+✅ API response times: Normal (2-3 seconds)
+✅ CPU usage: Healthy (30-40%)
+✅ Database connections: Stable
+❌ Memory usage: "It goes up sometimes" 🤷‍♂️</code></pre>
 
-<strong>The Real Issue:</strong> We had no function-level memory visibility. We knew <em>something</em> was eating memory, but not <em>what</em> or <em>when</em>.
+<p><strong>The Real Issue:</strong> We had no function-level memory visibility. We knew <em>something</em> was eating memory, but not <em>what</em> or <em>when</em>.</p>
 
 <h2>The Solution: If You Can't Buy It, Build It</h2>
 
@@ -170,20 +136,19 @@
 <p>#### The Core Concept: Decorators That Measure</p>
 
 <pre><code>import { Injectable } from '@nestjs/common';
-<p>import { ProfileAllMethods } from '@mahabub-arafat/memory-profiler';</p>
+import { ProfileAllMethods } from '@mahabub-arafat/memory-profiler';
 
-<p>@Injectable()</p>
-<p>@ProfileAllMethods()  // 🎯 This is the magic</p>
-<p>export class FlightService {</p>
-<p>async getAvailableFlights() {</p>
-<p>// Your existing code - no changes needed</p>
-<p>}</p>
+@Injectable()
+@ProfileAllMethods()  // 🎯 This is the magic
+export class FlightService {
+    async getAvailableFlights() {
+        // Your existing code - no changes needed
+    }
 
-<p>async getFlightHistory() {</p>
-<p>// This is where the leak was hiding</p>
-<p>}</p>
-<p>}</p>
-</code></pre>
+    async getFlightHistory() {
+        // This is where the leak was hiding
+    }
+}</code></pre>
 
 <p>#### What Happens Under the Hood</p>
 
@@ -195,25 +160,24 @@
 <p>4. <strong>Logs everything</strong> with beautiful, color-coded output</p>
 
 <pre><code>// Simplified version of the core logic
-<p>function profileMemory(target: any, propertyName: string, descriptor: PropertyDescriptor) {</p>
-<p>const originalMethod = descriptor.value;</p>
+function profileMemory(target: any, propertyName: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
     
-<p>descriptor.value = async function (...args: any[]) {</p>
-<p>const startMemory = process.memoryUsage().heapUsed / 1024 / 1024;</p>
-<p>const startTime = Date.now();</p>
+    descriptor.value = async function (...args: any[]) {
+        const startMemory = process.memoryUsage().heapUsed / 1024 / 1024;
+        const startTime = Date.now();
         
-<p>const result = await originalMethod.apply(this, args);</p>
+        const result = await originalMethod.apply(this, args);
         
-<p>const endMemory = process.memoryUsage().heapUsed / 1024 / 1024;</p>
-<p>const executionTime = Date.now() - startTime;</p>
-<p>const memoryConsumed = endMemory - startMemory;</p>
+        const endMemory = process.memoryUsage().heapUsed / 1024 / 1024;
+        const executionTime = Date.now() - startTime;
+        const memoryConsumed = endMemory - startMemory;
         
-<p>logger.info(<code>Function: ${propertyName}, Memory: ${memoryConsumed.toFixed(2)}MB, Time: ${executionTime}ms</code>);</p>
+        logger.info(`Function: ${propertyName}, Memory: ${memoryConsumed.toFixed(2)}MB, Time: ${executionTime}ms`);
         
-<p>return result;</p>
-<p>};</p>
-<p>}</p>
-</code></pre>
+        return result;
+    };
+}</code></pre>
 
 <h2>The Hunt: Deploying the Detective</h2>
 <div class="ad-container" style="margin: 30px 0; text-align: center;">
@@ -231,34 +195,31 @@
 
 <h3>Setting Up in Production</h3>
 
-<pre><code><h1>Environment setup</h1>
-<p>ENABLE_MEMORY_PROFILING_DECORATOR=true</p>
-</code></pre>
+<pre><code># Environment setup
+ENABLE_MEMORY_PROFILING_DECORATOR=true</code></pre>
 
 <pre><code>// Applied to our suspicious services
-<p>@Injectable()</p>
-<p>@ProfileAllMethods()</p>
-<p>export class FlightService {</p>
-<p>// All methods now being monitored</p>
-<p>}</p>
+@Injectable()
+@ProfileAllMethods()
+export class FlightService {
+    // All methods now being monitored
+}
 
-<p>@Injectable()</p>
-<p>@ProfileAllMethods()</p>
-<p>export class BookingService {</p>
-<p>// Every function call tracked</p>
-<p>}</p>
-</code></pre>
+@Injectable()
+@ProfileAllMethods() 
+export class BookingService {
+    // Every function call tracked
+}</code></pre>
 
 <h3>The Smoking Gun</h3>
 
 <p>Within hours, the logs revealed the culprit:</p>
 
 <pre><code>INFO [2024-10-23 10:51:53.710 +0600]: Function: getAvailableFlights, Memory: -0.95MB, Time: 2450ms ✅
-<p>INFO [2024-10-23 10:52:15.442 +0600]: Function: createBooking, Memory: 2.3MB, Time: 1200ms ✅</p>
-<p>WARN [2024-10-23 10:52:45.123 +0600]: Function: getFlightHistory, Memory: 847.32MB, Time: 8900ms ⚠️</p>
-</code></pre>
+INFO [2024-10-23 10:52:15.442 +0600]: Function: createBooking, Memory: 2.3MB, Time: 1200ms ✅
+WARN [2024-10-23 10:52:45.123 +0600]: Function: getFlightHistory, Memory: 847.32MB, Time: 8900ms ⚠️</code></pre>
 
-<strong>There it was.</strong> The <code>getFlightHistory</code> function was consuming <strong>847MB</strong> in a single call. In a normal application, that's astronomical.
+<p><strong>There it was.</strong> The <code>getFlightHistory</code> function was consuming <strong>847MB</strong> in a single call. In a normal application, that's astronomical.</p>
 
 <h2>The Root Cause: A Tale of Missing Data</h2>
 
@@ -267,54 +228,50 @@
 <p>I dove into the <code>getFlightHistory</code> function:</p>
 
 <pre><code>async getFlightHistory(providerId: string, bookingCode?: string) {
-<p>const filter: any = { providerId };</p>
+    const filter: any = { providerId };
     
-<p>// The bug was here ⬇️</p>
-<p>if (bookingCode) {</p>
-<p>filter.bookingCode = bookingCode;</p>
-<p>}</p>
+    // The bug was here ⬇️
+    if (bookingCode) {
+        filter.bookingCode = bookingCode;
+    }
     
-<p>// This query was the problem</p>
-<p>return await this.flightHistoryRepository.find(filter);</p>
-<p>}</p>
-</code></pre>
+    // This query was the problem
+    return await this.flightHistoryRepository.find(filter);
+}</code></pre>
 
 <h3>The Eureka Moment</h3>
 
 <p>For one specific provider, the third-party API wasn't sending <code>bookingCode</code> in their responses. So our filter became:</p>
 
 <pre><code>// What we expected
-<p>filter = { providerId: "PROVIDER_123", bookingCode: "ABC123" }</p>
+filter = { providerId: "PROVIDER_123", bookingCode: "ABC123" }
 
-<p>// What actually happened</p>
-<p>filter = { providerId: "PROVIDER_123" }  // bookingCode was undefined</p>
-</code></pre>
+// What actually happened
+filter = { providerId: "PROVIDER_123" }  // bookingCode was undefined</code></pre>
 
-<strong>The Result:</strong> Instead of returning one specific flight record, we were returning <strong>the entire flight history table</strong> for that provider. Thousands of records. Hundreds of megabytes. Every. Single. Time.
+<p><strong>The Result:</strong> Instead of returning one specific flight record, we were returning <strong>the entire flight history table</strong> for that provider. Thousands of records. Hundreds of megabytes. Every. Single. Time.</p>
 
 <h3>The Cascade Effect</h3>
 
-<pre><code><h1>What happened in production</h1>
-<p>User requests flight history → Missing bookingCode → Return entire table →</p>
-<p>Memory spike → Multiply by concurrent users → Heap overflow → App crash</p>
-</code></pre>
+<pre><code># What happened in production
+User requests flight history → Missing bookingCode → Return entire table → 
+Memory spike → Multiply by concurrent users → Heap overflow → App crash</code></pre>
 
 <h2>The Fix: Simple but Critical</h2>
 
 <pre><code>async getFlightHistory(providerId: string, bookingCode?: string) {
-<p>const filter: any = { providerId };</p>
+    const filter: any = { providerId };
     
-<p>// The fix ✅</p>
-<p>if (!bookingCode) {</p>
-<p>throw new BadRequestException('Booking code is required');</p>
-<p>}</p>
+    // The fix ✅
+    if (!bookingCode) {
+        throw new BadRequestException('Booking code is required');
+    }
     
-<p>filter.bookingCode = bookingCode;</p>
-<p>return await this.flightHistoryRepository.find(filter);</p>
-<p>}</p>
-</code></pre>
+    filter.bookingCode = bookingCode;
+    return await this.flightHistoryRepository.find(filter);
+}</code></pre>
 
-<strong>Result:</strong> Memory usage dropped from 847MB to 2.3MB per call. Problem solved.
+<p><strong>Result:</strong> Memory usage dropped from 847MB to 2.3MB per call. Problem solved.</p>
 
 <h2>The Impact: More Than Just a Bug Fix</h2>
 
@@ -339,16 +296,15 @@
 <h3>Key Features</h3>
 
 <pre><code>// Profile everything in a class
-<p>@ProfileAllMethods()</p>
-<p>export class SomeService { }</p>
+@ProfileAllMethods()
+export class SomeService { }
 
-<p>// Profile individual functions</p>
-<p>@ProfileMemoryAsyncFunction()</p>
-<p>async specificMethod() { }</p>
+// Profile individual functions
+@ProfileMemoryAsyncFunction()
+async specificMethod() { }
 
-<p>@ProfileMemorySyncFunction()</p>
-<p>syncMethod() { }</p>
-</code></pre>
+@ProfileMemorySyncFunction()
+syncMethod() { }</code></pre>
 
 <h3>Production-Safe Design</h3>
 
@@ -362,15 +318,14 @@
 <h3>Real Output in Action</h3>
 
 <pre><code>INFO [2024-10-23 10:51:53.710 +0600] (776639 on st): 
-<p>Async -> Function: getAvailableFlights,</p>
-<p>startMemory: 45.57MB, endMemory: 44.62MB,</p>
-<p>memoryConsumed: -0.95MB, executionTime: 2450 ms</p>
+  Async -> Function: getAvailableFlights, 
+  startMemory: 45.57MB, endMemory: 44.62MB, 
+  memoryConsumed: -0.95MB, executionTime: 2450 ms
 
-<p>WARN [2024-10-23 10:52:21.261 +0600] (776639 on st):</p>
-<p>Async -> Function: timedoutSearch,</p>
-<p>startMemory: 42.17MB, endMemory: 36.15MB,</p>
-<p>memoryConsumed: -6.02MB, executionTime: 30000 ms</p>
-</code></pre>
+WARN [2024-10-23 10:52:21.261 +0600] (776639 on st): 
+  Async -> Function: timedoutSearch, 
+  startMemory: 42.17MB, endMemory: 36.15MB, 
+  memoryConsumed: -6.02MB, executionTime: 30000 ms</code></pre>
 
 <h2>Lessons Learned: The Real Takeaways</h2>
 
@@ -403,16 +358,15 @@
 
 <p>Want to add function-level memory monitoring to your NestJS app?</p>
 
-<pre><code>npm install @mahabub-arafat/memory-profiler
-</code></pre>
+<pre><code>npm install @mahabub-arafat/memory-profiler</code></pre>
 
 <p>Check out the full documentation on <a href="https://github.com/mahabubarafat-st/memory-profiler">GitHub</a> and <a href="https://www.npmjs.com/package/@mahabub-arafat/memory-profiler">NPM</a>.</p>
 
-<p>---</p>
+<hr>
 
-<strong>The Bottom Line:</strong> Sometimes the best debugging tool is the one you build yourself. When production is on fire and traditional tools aren't helping, don't be afraid to create something new. You might just save the day - and help other developers in the process.
+<p><strong>The Bottom Line:</strong> Sometimes the best debugging tool is the one you build yourself. When production is on fire and traditional tools aren't helping, don't be afraid to create something new. You might just save the day - and help other developers in the process.</p>
 
-<em>Have you ever built custom debugging tools to solve production issues? I'd love to hear your stories. Connect with me on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - let's share war stories and solutions.</em>
+<p><em>Have you ever built custom debugging tools to solve production issues? I'd love to hear your stories. Connect with me on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - let's share war stories and solutions.</em></p>
 
             </div>
 
@@ -432,8 +386,8 @@
             <div class="social-share">
                 <h3>Share this article</h3>
                 <div class="share-buttons">
-                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/memory-tracker-production-story.html&title=How%20I%20Built%20a%20Custom%20Memory%20Tracker%20That%20Saved%20Our%20Production%20API" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
-                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/memory-tracker-production-story.html&text=How%20I%20Built%20a%20Custom%20Memory%20Tracker%20That%20Saved%20Our%20Production%20API" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/memory-tracker-production-story.html&title=How I Built a Custom Memory Tracker That Saved Our Production API" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/memory-tracker-production-story.html&text=How I Built a Custom Memory Tracker That Saved Our Production API" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
                 </div>
             </div>
 
