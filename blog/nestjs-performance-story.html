@@ -22,27 +22,7 @@
     
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": "How I Made Our API 3-4x Faster with NestJS",
-      "description": "The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.",
-      "author": {
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      },
-      "datePublished": "2025-01-15",
-      "dateModified": "2025-01-15",
-      "publisher": {
-        "@type": "Person",
-        "name": "Mahabub Alam Arafat"
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://mahabubarafat.online/blog/nestjs-performance-story.html"
-      },
-      "keywords": ["NestJS", "TypeScript", "API performance", "ShareTrip", "booking system", "legacy migration"]
-    }
+    {{"@context": "https://schema.org","@type": "BlogPosting","headline": "How I Made Our API 3-4x Faster with NestJS","description": "The real story of rewriting ShareTrip's legacy booking API. What worked, what didn't, and the surprising results.","author": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"datePublished": "2025-01-15","dateModified": "2025-01-15","publisher": {{"@type": "Person","name": "Mahabub Alam Arafat"}},"mainEntityOfPage": {{"@type": "WebPage","@id": "https://mahabubarafat.online/blog/nestjs-performance-story.html"}},"keywords": ["NestJS", "TypeScript", "API performance", "ShareTrip", "booking system", "legacy migration"]}}
     </script>
     
     <title>How I Made Our API 3-4x Faster with NestJS | Mahabub Alam Arafat</title>
@@ -83,24 +63,11 @@
                 </div>
             </header>
 
-            <!-- Display Ad - Top of Article -->
-            <div style="text-align: center; margin: 30px 0;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-6705222517983610"
-                     data-ad-slot="3215730742"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-
             <div class="content">
                 
 <h1>How I Made Our API 3-4x Faster with NestJS</h1>
 
-<strong>TL;DR:</strong> I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 3-4x faster response times (from 20-30 seconds down to 8-9 seconds) and way less headaches. Here's how I did it and what I learned.
+<p><strong>TL;DR:</strong> I rewrote ShareTrip's legacy booking API with NestJS and TypeScript. Result? 3-4x faster response times (from 20-30 seconds down to 8-9 seconds) and way less headaches. Here's how I did it and what I learned.</p>
 
 <h2>The Problem: Our API Was Slow (And Getting Slower)</h2>
 
@@ -139,13 +106,12 @@
 <p>The old codebase? Finding anything took 20 minutes. NestJS forced us into a clean structure:</p>
 
 <pre><code>src/
-<p>├── booking/          # Everything booking-related</p>
-<p>│   ├── booking.controller.ts</p>
-<p>│   ├── booking.service.ts</p>
-<p>│   └── booking.module.ts</p>
-<p>├── payment/          # Payment stuff here</p>
-<p>└── shared/           # Common utilities</p>
-</code></pre>
+├── booking/          # Everything booking-related
+│   ├── booking.controller.ts
+│   ├── booking.service.ts
+│   └── booking.module.ts
+├── payment/          # Payment stuff here
+└── shared/           # Common utilities</code></pre>
 
 <h2>The Migration: What Actually Happened</h2>
 
@@ -153,18 +119,17 @@
 <p>I started with the booking module. Basic CRUD operations, proper validation, and error handling that doesn't just throw generic 500 errors.</p>
 
 <pre><code>// Before: Pray this works
-<p>app.post('/booking', (req, res) => {</p>
-<p>// Hope req.body has what we need</p>
-<p>const booking = createBooking(req.body);</p>
-<p>res.json(booking);</p>
-<p>});</p>
+app.post('/booking', (req, res) => {
+  // Hope req.body has what we need
+  const booking = createBooking(req.body);
+  res.json(booking);
+});
 
-<p>// After: Know this works</p>
-<p>@Post()</p>
-<p>async createBooking(@Body() createBookingDto: CreateBookingDto) {</p>
-<p>return this.bookingService.create(createBookingDto);</p>
-<p>}</p>
-</code></pre>
+// After: Know this works
+@Post()
+async createBooking(@Body() createBookingDto: CreateBookingDto) {
+  return this.bookingService.create(createBookingDto);
+}</code></pre>
 
 <h3>Week 3-4: The Database Nightmare</h3>
 <p>Our old queries were... creative. I found a query that was doing 12 separate database calls to get data that could be fetched in one.</p>
@@ -173,27 +138,26 @@
 <p>This is where things got interesting. I added Redis caching for frequently accessed data like airports, routes, cities, and discounts:</p>
 
 <pre><code>// Cache frequently accessed reference data
-<p>async getAirports() {</p>
-<p>const cacheKey = 'airports-list';</p>
-<p>const cached = await this.redis.get(cacheKey);</p>
-<p>if (cached) return JSON.parse(cached);</p>
+async getAirports() {
+  const cacheKey = 'airports-list';
+  const cached = await this.redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
   
-<p>const airports = await this.airportService.getAll();</p>
-<p>await this.redis.setex(cacheKey, 3600, JSON.stringify(airports)); // 1 hour cache</p>
-<p>return airports;</p>
-<p>}</p>
+  const airports = await this.airportService.getAll();
+  await this.redis.setex(cacheKey, 3600, JSON.stringify(airports)); // 1 hour cache
+  return airports;
+}
 
-<p>// Cache routes, cities, discounts similarly</p>
-<p>async getPopularFlights() {</p>
-<p>const cacheKey = 'popular-flights';</p>
-<p>const cached = await this.redis.get(cacheKey);</p>
-<p>if (cached) return JSON.parse(cached);</p>
+// Cache routes, cities, discounts similarly
+async getPopularFlights() {
+  const cacheKey = 'popular-flights';
+  const cached = await this.redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
   
-<p>const flights = await this.flightService.getPopular();</p>
-<p>await this.redis.setex(cacheKey, 600, JSON.stringify(flights)); // 10 minutes</p>
-<p>return flights;</p>
-<p>}</p>
-</code></pre>
+  const flights = await this.flightService.getPopular();
+  await this.redis.setex(cacheKey, 600, JSON.stringify(flights)); // 10 minutes
+  return flights;
+}</code></pre>
 
 <h2>The Results (The Good Stuff)</h2>
 <div class="ad-container" style="margin: 30px 0; text-align: center;">
@@ -209,7 +173,7 @@
 </div>
 
 
-<strong>🚀 Performance Improvements:</strong>
+<p><strong>🚀 Performance Improvements:</strong></p>
 <ul>
 <li>Average response time: 20-30s → 8-9s (3-4x faster!)</li>
 <li>Handled massive flight data generation that broke the old API</li>
@@ -261,9 +225,9 @@
 
 <p>I'll write about that journey too - including the mistakes I'm definitely going to make along the way.</p>
 
-<p>---</p>
+<hr>
 
-<em>Questions about this migration? Want to know more about specific parts? Hit me up on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - I love talking about this stuff.</em>
+<p><em>Questions about this migration? Want to know more about specific parts? Hit me up on <a href="https://linkedin.com/in/mahabubarafat">LinkedIn</a> - I love talking about this stuff.</em></p>
 
             </div>
 
@@ -283,8 +247,8 @@
             <div class="social-share">
                 <h3>Share this article</h3>
                 <div class="share-buttons">
-                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/nestjs-performance-story.html&title=How%20I%20Made%20Our%20API%203-4x%20Faster%20with%20NestJS" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
-                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/nestjs-performance-story.html&text=How%20I%20Made%20Our%20API%203-4x%20Faster%20with%20NestJS" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
+                    <a href="https://linkedin.com/shareArticle?mini=true&url=https://mahabubarafat.online/blog/nestjs-performance-story.html&title=How I Made Our API 3-4x Faster with NestJS" target="_blank" class="share-btn share-linkedin">Share on LinkedIn</a>
+                    <a href="https://twitter.com/intent/tweet?url=https://mahabubarafat.online/blog/nestjs-performance-story.html&text=How I Made Our API 3-4x Faster with NestJS" target="_blank" class="share-btn share-twitter">Share on Twitter</a>
                 </div>
             </div>
 

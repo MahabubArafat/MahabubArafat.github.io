@@ -423,6 +423,58 @@ article {
     color: #666;
 }
 
+/* Table Styles */
+.content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.content th,
+.content td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.content th {
+    background-color: #0073e6;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 0.5px;
+}
+
+.content tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.content tr:hover {
+    background-color: #e8f4fd;
+}
+
+.content td:last-child {
+    font-weight: bold;
+    color: #0073e6;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+    .content table {
+        font-size: 0.9em;
+    }
+    
+    .content th,
+    .content td {
+        padding: 8px 10px;
+    }
+}
+
 /* Highlight Box */
 .highlight-box {
     background-color: #e8f4fd;
