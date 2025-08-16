@@ -1,2 +1,4 @@
 make_instructions/
 *.bat
+*.cpython
+__pycache__/
