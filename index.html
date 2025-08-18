@@ -115,6 +115,40 @@
       "copyrightHolder": {
         "@type": "Person",
         "name": "Mahabub Alam Arafat"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://mahabubarafat.online/blog/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!-- Organization Schema for Professional Profile -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Mahabub Alam Arafat - Software Engineering Services",
+      "description": "Professional software engineering services specializing in backend development, microservices architecture, and API optimization",
+      "url": "https://mahabubarafat.online",
+      "serviceType": "Software Development",
+      "provider": {
+        "@type": "Person",
+        "name": "Mahabub Alam Arafat",
+        "jobTitle": "Software Engineer",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "ShareTrip"
+        }
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Global"
+      },
+      "serviceArea": {
+        "@type": "Place",
+        "name": "Remote"
       }
     }
     </script>
@@ -164,13 +198,13 @@
         <p itemprop="jobTitle">Software Engineer</p>
         <nav role="navigation" aria-label="Main navigation">
             <ul>                
-                <li><a href="#about" aria-label="About Mahabub Alam Arafat">About Me</a></li>
+                <li><a href="about.html" aria-label="About Mahabub Alam Arafat">About</a></li>
                 <li><a href="#skills" aria-label="Technical skills and expertise">Skills</a></li>
                 <li><a href="#experience" aria-label="Professional work experience">Experience</a></li>
                 <li><a href="#projects" aria-label="Portfolio projects">Projects</a></li>
                 <li><a href="#education" aria-label="Educational background">Education</a></li>
-                <li><a href="#contact" aria-label="Contact information">Contact</a></li>
-                <li><a href="#blog" aria-label="Technical blog posts">Blog</a></li>
+                <li><a href="contact.html" aria-label="Contact information">Contact</a></li>
+                <li><a href="blog/" aria-label="Technical blog posts">Blog</a></li>
             </ul>
         </nav>
     </header>    <main role="main">
@@ -338,10 +372,10 @@
 
     <section id="blog">
         <h2>Technical Blog</h2>
-        <p style="text-align: center; margin-bottom: 30px; color: #666; font-size: 1.1em;">Sharing insights from real-world software engineering experiences</p>
+        <p class="blog-description">Sharing insights from real-world software engineering experiences</p>
         
         <!-- Display Ad - Above Blog Section -->
-        <div style="text-align: center; margin: 30px 0;">
+        <div class="ad-container">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="ca-pub-6705222517983610"
@@ -468,7 +502,11 @@
 
     <footer role="contentinfo">
         <p>© 2025 <span itemprop="name">Mahabub Alam Arafat</span>. All rights reserved.</p>
-        <p><a href="privacy-policy.html" style="color: #ccc;">Privacy Policy</a></p>
+        <p>
+            <a href="about.html" class="footer-link">About Us</a> | 
+            <a href="contact.html" class="footer-link">Contact</a> | 
+            <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+        </p>
     </footer>
 
     <script src="scripts.js"></script>
