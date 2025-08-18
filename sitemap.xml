@@ -7,7 +7,7 @@
     <!-- Main Portfolio Page -->
     <url>
         <loc>https://mahabubarafat.online/</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2025-01-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -15,65 +15,117 @@
     <!-- Blog Index Page -->
     <url>
         <loc>https://mahabubarafat.online/blog/</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
 
-    <!-- Individual Blog Posts -->
+    <!-- About Page -->
     <url>
-        <loc>https://mahabubarafat.online/blog/nestjs-microservices.html</loc>
-        <lastmod>2025-01-15</lastmod>
+        <loc>https://mahabubarafat.online/about.html</loc>
+        <lastmod>2025-01-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
+    </url>
+
+    <!-- Contact Page -->
+    <url>
+        <loc>https://mahabubarafat.online/contact.html</loc>
+        <lastmod>2025-01-18</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Privacy Policy -->
+    <url>
+        <loc>https://mahabubarafat.online/privacy-policy.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+    <!-- Individual Blog Posts -->
+    <url>
+        <loc>https://mahabubarafat.online/blog/flight-api-microservices-transformation.html</loc>
+        <lastmod>2024-12-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://mahabubarafat.online/blog/cron-microservice-cost-optimization.html</loc>
+        <lastmod>2025-01-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://mahabubarafat.online/blog/memory-tracker-production-story.html</loc>
+        <lastmod>2025-01-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://mahabubarafat.online/blog/nestjs-performance-story.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://mahabubarafat.online/blog/index.html</loc>
+        <lastmod>2025-01-17</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
     </url>
 
     <!-- Portfolio Sections (Deep Links) -->
     <url>
         <loc>https://mahabubarafat.online/#about</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <url>
         <loc>https://mahabubarafat.online/#skills</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <url>
         <loc>https://mahabubarafat.online/#experience</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <url>
         <loc>https://mahabubarafat.online/#projects</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
 
     <url>
         <loc>https://mahabubarafat.online/#education</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.4</priority>
     </url>
 
     <url>
         <loc>https://mahabubarafat.online/#contact</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
 
     <url>
         <loc>https://mahabubarafat.online/#blog</loc>
-        <lastmod>2025-01-15</lastmod>
+        <lastmod>2024-12-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
