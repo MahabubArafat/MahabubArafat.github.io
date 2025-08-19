@@ -1,4 +1,2 @@
-# ads.txt file for mahabubarafat.online
-# Google AdSense - Official Publisher ID
-
+google.com, pub-6705222517983610, DIRECT, f08c47fec0942fa0
 google.com, pub-6705222517983610, DIRECT, f08c47fec0942fa0
